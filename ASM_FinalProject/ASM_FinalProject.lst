@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/02/24 20:54:21
+Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/02/24 21:09:57
 main.asm						     Page 1 - 1
 
 
@@ -21,17 +21,19 @@ main.asm						     Page 1 - 1
 			      C .LIST
 			      C 
  00000000			.data 
- 00000000 48 65 6C 6C 6F	String byte "Hello World!",0 
-	   20 57 6F 72 6C
-	   64 21 00
+
  00000000			.code 
  00000000			main PROC 
- 00000000  BA 00000000 R	mov edx,offset String 
- 00000005  E8 00000000 E	call writestring 
-				invoke ExitProcess,0 
- 00000011			main ENDP 
+ 00000000  BB 00000005			mov ebx, 5
+ 00000005  B8 00000005			mov eax, 5
+ 0000000A  F7 EB			imul ebx
+ 0000000C  F7 E3			mul ebx
+ 0000000E  E8 00000000 E		call WriteDec
+					invoke ExitProcess, 0
+ 0000001A			main ENDP 
+
 				END main
-Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/02/24 20:54:21
+Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/02/24 21:09:57
 main.asm						     Symbols 2 - 1
 
 
@@ -125,8 +127,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 0000000D Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000011 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000001A Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -233,7 +235,7 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000011 Public STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000001A Public STDCALL
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
@@ -368,7 +370,6 @@ STD_ERROR_HANDLE . . . . . . . .	Number	 -0000000Ch
 STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
 STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
 SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
-String . . . . . . . . . . . . .	Byte	 00000000 _DATA	
 TAB  . . . . . . . . . . . . . .	Number	 00000009h   
 TRUE . . . . . . . . . . . . . .	Number	 00000001h   
 TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
