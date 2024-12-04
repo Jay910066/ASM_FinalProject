@@ -47,6 +47,11 @@ GameLoop:
 	exit
 main ENDP
 
+test PROC
+	mov eax, 0
+	ret
+test ENDP
+
 readInput PROC
     ; 檢查W鍵（向上移動）
     INVOKE GetAsyncKeyState, 'W'
