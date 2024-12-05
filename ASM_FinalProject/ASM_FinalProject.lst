@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/05/24 01:16:49
+Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/05/24 16:27:59
 main.asm						     Page 1 - 1
 
 
@@ -22,26 +22,33 @@ main.asm						     Page 1 - 1
 			      C 
 
  = 00000001			playerSize = 1
+ = 00000001			gravity = 1
+ =-00000005			jumpForce = -5
 
  00000000			.data
- 00000000 61			player BYTE 'a'
+ 00000000 50			player BYTE 'P'
 
  00000001 00000000		outputHandle DWORD 0
  00000005 00000000		bytesWritten DWORD 0
  00000009 00000000		count DWORD 0
  0000000D 000A 0005		playerXY COORD <10,5>
+ 00000011 0000			velocityY SWORD 0
 
- 00000011 00000000		cellsWritten DWORD ?
- 00000015  00000001 [		playerAttributes WORD playerSize DUP(0bh)
+ 00000013 0019			groundLevel WORD 25
+ 00000015 00000001		onGround DWORD 1
+
+
+ 00000019 00000000		cellsWritten DWORD ?
+ 0000001D  00000001 [		playerAttributes WORD playerSize DUP(0bh)
 	    000B
 	   ]
 
- 00000017 00000064		updateInterval DWORD 100 ; 100ms each update
+ 0000001F 00000064		updateInterval DWORD 100 ; 100ms each update
 
- 0000001B 00000000		startTime DWORD ?
- 0000001F 00000000		elapsedTime DWORD ?
- 00000023 00000258		timeLimit DWORD 600 ; 600 seconds
- 00000027 0001 0001		TimerXY COORD <1,1>
+ 00000023 00000000		startTime DWORD ?
+ 00000027 00000000		elapsedTime DWORD ?
+ 0000002B 00000258		timeLimit DWORD 600 ; 600 seconds
+ 0000002F 0001 0001		TimerXY COORD <1,1>
 
  00000000			.code
 					SetConsoleOutputCP PROTO STDCALL :DWORD
@@ -55,65 +62,96 @@ main.asm						     Page 1 - 1
  0000000C  E8 00000000 E		call Clrscr
 
 					INVOKE GetTickCount
- 00000016  A3 0000001B R		mov startTime, eax
+ 00000016  A3 00000023 R		mov startTime, eax
 					
  0000001B			GameLoop:
  0000001B  E8 00000000 E		call Clrscr
- 00000020  E8 00000083			call drawPlayer
- 00000025  E8 000000B9			call displayTime
- 0000002A  E8 00000014			call readInput
+ 00000020  E8 00000023			call updatePhysics
+ 00000025  E8 000000D0			call drawPlayer
+ 0000002A  E8 00000106			call displayTime
+ 0000002F  E8 0000005E			call readInput
 					invoke Sleep, updateInterval
- 0000003A  EB DF			jmp GameLoop
-
-					
+ 0000003F  EB DA			jmp GameLoop
 
 					exit
- 00000043			main ENDP
+ 00000048			main ENDP
 
- 00000043			readInput PROC
+ 00000048			updatePhysics PROC uses eax ebx
+				    ; 1. 更新玩家的 Y 座標
+ 0000004A  66| A1		    mov ax, velocityY
+	   00000011 R
+ 00000050  66| 01 05		    add playerXY.Y, ax        ; 根據垂直速度更新位置
+	   0000000F R
+
+				    ; 2. 應用重力（加速垂直速度）
+ 00000057  66| 83 05		    add velocityY, gravity    ; 重力影響：速度越來越快
+	   00000011 R 01
+
+				    ; 3. 檢查是否低於地面
+ 0000005F  66| A1		    mov ax, playerXY.Y
+	   0000000F R
+ 00000065  66| 3B 05		    cmp ax, groundLevel
+	   00000013 R
+ 0000006C  7E 21		    jle EndPhysics            ; 如果未超過地面，跳過地面處理
+
+				    ; 如果超出地面，重置到地面
+ 0000006E  66| A1		    mov ax, groundLevel
+	   00000013 R
+ 00000074  66| A3		    mov playerXY.Y, ax        ; 將玩家重置到地面
+	   0000000F R
+ 0000007A  66| C7 05		    mov velocityY, 0          ; 停止垂直運動
+	   00000011 R
+	   0000
+ 00000083  C7 05 00000015 R	    mov onGround, 1           ; 標記玩家在地面上
+	   00000001
+ 0000008D  EB 00		    jmp EndPhysics
+
+ 0000008F			EndPhysics:
+				    ret
+ 00000092			updatePhysics ENDP
+
+ 00000092			readInput PROC
 				    ; 檢查W鍵（向上移動）
 				    INVOKE GetAsyncKeyState, 'W'
- 0000004A  66| A9 8000		    test ax, 8000h
- 0000004E  74 07		    jz CheckS
- 00000050  66| FF 0D		    dec playerXY.Y           ; 玩家Y座標減少，向上移動
-	   0000000F R
+ 00000099  66| A9 8000		    test ax, 8000h
+ 0000009D  74 1E		    jz CheckA
+ 0000009F  83 3D 00000015 R		cmp onGround, 1
+	   01
+ 000000A6  75 15			jne CheckA
+ 000000A8  66| B8 0005			mov ax, 5
+ 000000AC  66| 29 05			sub velocityY, ax
+	   00000011 R
+ 000000B3  C7 05 00000015 R		mov onGround, 0
+	   00000000
 
- 00000057			CheckS:
-				    ; 檢查S鍵（向下移動）
-				    INVOKE GetAsyncKeyState, 'S'
- 0000005E  66| A9 8000		    test ax, 8000h
- 00000062  74 07		    jz CheckA
- 00000064  66| FF 05		    inc playerXY.Y           ; 玩家Y座標增加，向下移動
-	   0000000F R
-
- 0000006B			CheckA:
+ 000000BD			CheckA:
 				    ; 檢查A鍵（向左移動）
 				    INVOKE GetAsyncKeyState, 'A'
- 00000072  66| A9 8000		    test ax, 8000h
- 00000076  74 07		    jz CheckD
- 00000078  66| FF 0D		    dec playerXY.X           ; 玩家X座標減少，向左移動
+ 000000C4  66| A9 8000		    test ax, 8000h
+ 000000C8  74 07		    jz CheckD
+ 000000CA  66| FF 0D		    dec playerXY.X           ; 玩家X座標減少，向左移動
 	   0000000D R
 
- 0000007F			CheckD:
+ 000000D1			CheckD:
 				    ; 檢查D鍵（向右移動）
 				    INVOKE GetAsyncKeyState, 'D'
- 00000086  66| A9 8000		    test ax, 8000h
- 0000008A  74 07		    jz CheckESC
- 0000008C  66| FF 05		    inc playerXY.X           ; 玩家X座標增加，向右移動
+ 000000D8  66| A9 8000		    test ax, 8000h
+ 000000DC  74 07		    jz CheckESC
+ 000000DE  66| FF 05		    inc playerXY.X           ; 玩家X座標增加，向右移動
 	   0000000D R
 
- 00000093			CheckESC:
+ 000000E5			CheckESC:
 				    ; 檢查ESC鍵（退出遊戲）
 				    INVOKE GetAsyncKeyState, VK_ESCAPE
- 0000009A  66| A9 8000		    test ax, 8000h
- 0000009E  74 07		    jz EndInput
-				    exit                     ; 如果按下ESC，退出遊戲
+ 000000EC  66| A9 8000		    test ax, 8000h
+ 000000F0  74 07		    jz EndInput
+				    INVOKE ExitProcess, 0    ; 如果按下ESC，退出遊戲
 
- 000000A7			EndInput:
- 000000A7  C3				ret
- 000000A8			readInput ENDP
+ 000000F9			EndInput:
+ 000000F9  C3				ret
+ 000000FA			readInput ENDP
 
- 000000A8			drawPlayer PROC
+ 000000FA			drawPlayer PROC
 					INVOKE WriteConsoleOutputAttribute,
 					outputHandle, 
 					OFFSET playerAttributes,
@@ -127,28 +165,28 @@ main.asm						     Page 1 - 1
 					playerSize,
 					playerXY,
 					OFFSET count
- 000000E2  C3				ret
- 000000E3			drawPlayer ENDP
+ 00000134  C3				ret
+ 00000135			drawPlayer ENDP
 
- 000000E3			displayTime PROC uses eax ebx ecx edx
+ 00000135			displayTime PROC uses eax ebx ecx edx
 					INVOKE GetTickCount
- 000000EC  2B 05 0000001B R		sub eax, startTime
- 000000F2  99				cdq
- 000000F3  BB 000003E8			mov ebx, 1000
- 000000F8  F7 F3			div ebx
- 000000FA  A3 0000001F R		mov elapsedTime, eax
- 000000FF  A1 00000023 R		mov eax, timeLimit
- 00000104  2B 05 0000001F R		sub eax, elapsedTime
+ 0000013E  2B 05 00000023 R		sub eax, startTime
+ 00000144  99				cdq
+ 00000145  BB 000003E8			mov ebx, 1000
+ 0000014A  F7 F3			div ebx
+ 0000014C  A3 00000027 R		mov elapsedTime, eax
+ 00000151  A1 0000002B R		mov eax, timeLimit
+ 00000156  2B 05 00000027 R		sub eax, elapsedTime
 
- 0000010A  B2 01			mov dl, 1
- 0000010C  B6 01			mov dh, 1
- 0000010E  E8 00000000 E		call gotoxy
- 00000113  E8 00000000 E		call WriteDec
+ 0000015C  B2 01			mov dl, 1
+ 0000015E  B6 01			mov dh, 1
+ 00000160  E8 00000000 E		call gotoxy
+ 00000165  E8 00000000 E		call WriteDec
 					ret
- 0000011D			displayTime ENDP
+ 0000016F			displayTime ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/05/24 01:16:49
+Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/05/24 16:27:59
 main.asm						     Symbols 2 - 1
 
 
@@ -242,8 +280,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 0000002B Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000011D Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000033 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000016F Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -352,18 +390,19 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-displayTime  . . . . . . . . . .	P Near	 000000E3 _TEXT	Length= 0000003A Public STDCALL
-drawPlayer . . . . . . . . . . .	P Near	 000000A8 _TEXT	Length= 0000003B Public STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000043 Public STDCALL
+displayTime  . . . . . . . . . .	P Near	 00000135 _TEXT	Length= 0000003A Public STDCALL
+drawPlayer . . . . . . . . . . .	P Near	 000000FA _TEXT	Length= 0000003B Public STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000048 Public STDCALL
   GameLoop . . . . . . . . . . .	L Near	 0000001B _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
-readInput  . . . . . . . . . . .	P Near	 00000043 _TEXT	Length= 00000065 Public STDCALL
-  CheckS . . . . . . . . . . . .	L Near	 00000057 _TEXT	
-  CheckA . . . . . . . . . . . .	L Near	 0000006B _TEXT	
-  CheckD . . . . . . . . . . . .	L Near	 0000007F _TEXT	
-  CheckESC . . . . . . . . . . .	L Near	 00000093 _TEXT	
-  EndInput . . . . . . . . . . .	L Near	 000000A7 _TEXT	
+readInput  . . . . . . . . . . .	P Near	 00000092 _TEXT	Length= 00000068 Public STDCALL
+  CheckA . . . . . . . . . . . .	L Near	 000000BD _TEXT	
+  CheckD . . . . . . . . . . . .	L Near	 000000D1 _TEXT	
+  CheckESC . . . . . . . . . . .	L Near	 000000E5 _TEXT	
+  EndInput . . . . . . . . . . .	L Near	 000000F9 _TEXT	
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+updatePhysics  . . . . . . . . .	P Near	 00000048 _TEXT	Length= 0000004A Public STDCALL
+  EndPhysics . . . . . . . . . .	L Near	 0000008F _TEXT	
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 
 
@@ -499,7 +538,7 @@ SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
 TAB  . . . . . . . . . . . . . .	Number	 00000009h   
 TRUE . . . . . . . . . . . . . .	Number	 00000001h   
 TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
-TimerXY  . . . . . . . . . . . .	COORD	 00000027 _DATA	
+TimerXY  . . . . . . . . . . . .	COORD	 0000002F _DATA	
 VK_11  . . . . . . . . . . . . .	Number	 000000BDh   
 VK_12  . . . . . . . . . . . . .	Number	 000000BBh   
 VK_ADD . . . . . . . . . . . . .	Number	 0000006Bh   
@@ -585,13 +624,16 @@ black  . . . . . . . . . . . . .	Number	 00000000h
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
 bytesWritten . . . . . . . . . .	DWord	 00000005 _DATA	
-cellsWritten . . . . . . . . . .	DWord	 00000011 _DATA	
+cellsWritten . . . . . . . . . .	DWord	 00000019 _DATA	
 count  . . . . . . . . . . . . .	DWord	 00000009 _DATA	
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
-elapsedTime  . . . . . . . . . .	DWord	 0000001F _DATA	
+elapsedTime  . . . . . . . . . .	DWord	 00000027 _DATA	
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+gravity  . . . . . . . . . . . .	Number	 00000001h   
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
+groundLevel  . . . . . . . . . .	Word	 00000013 _DATA	
+jumpForce  . . . . . . . . . . .	Number	 -00000005h   
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
@@ -599,15 +641,17 @@ lightGreen . . . . . . . . . . .	Number	 0000000Ah
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
+onGround . . . . . . . . . . . .	DWord	 00000015 _DATA	
 outputHandle . . . . . . . . . .	DWord	 00000001 _DATA	
-playerAttributes . . . . . . . .	Word	 00000015 _DATA	
+playerAttributes . . . . . . . .	Word	 0000001D _DATA	
 playerSize . . . . . . . . . . .	Number	 00000001h   
 playerXY . . . . . . . . . . . .	COORD	 0000000D _DATA	
 player . . . . . . . . . . . . .	Byte	 00000000 _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
-startTime  . . . . . . . . . . .	DWord	 0000001B _DATA	
-timeLimit  . . . . . . . . . . .	DWord	 00000023 _DATA	
-updateInterval . . . . . . . . .	DWord	 00000017 _DATA	
+startTime  . . . . . . . . . . .	DWord	 00000023 _DATA	
+timeLimit  . . . . . . . . . . .	DWord	 0000002B _DATA	
+updateInterval . . . . . . . . .	DWord	 0000001F _DATA	
+velocityY  . . . . . . . . . . .	Word	 00000011 _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   

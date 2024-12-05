@@ -1,14 +1,21 @@
 INCLUDE Irvine32.inc
 
 playerSize = 1
+gravity = 1
+jumpForce = -5
 
 .data
-player BYTE 'a'
+player BYTE 'P'
 
 outputHandle DWORD 0
 bytesWritten DWORD 0
 count DWORD 0
 playerXY COORD <10,5>
+velocityY SWORD 0
+
+groundLevel WORD 25
+onGround DWORD 1
+
 
 cellsWritten DWORD ?
 playerAttributes WORD playerSize DUP(0bh)
@@ -36,30 +43,50 @@ main PROC
 	
 GameLoop:
 	call Clrscr
+	call updatePhysics
 	call drawPlayer
 	call displayTime
 	call readInput
 	invoke Sleep, updateInterval
 	jmp GameLoop
 
-	
-
 	exit
 main ENDP
+
+updatePhysics PROC uses eax ebx
+    ; 1. 更新玩家的 Y 座標
+    mov ax, velocityY
+    add playerXY.Y, ax        ; 根據垂直速度更新位置
+
+    ; 2. 應用重力（加速垂直速度）
+    add velocityY, gravity    ; 重力影響：速度越來越快
+
+    ; 3. 檢查是否低於地面
+    mov ax, playerXY.Y
+    cmp ax, groundLevel
+    jle EndPhysics            ; 如果未超過地面，跳過地面處理
+
+    ; 如果超出地面，重置到地面
+    mov ax, groundLevel
+    mov playerXY.Y, ax        ; 將玩家重置到地面
+    mov velocityY, 0          ; 停止垂直運動
+    mov onGround, 1           ; 標記玩家在地面上
+    jmp EndPhysics
+
+EndPhysics:
+    ret
+updatePhysics ENDP
 
 readInput PROC
     ; 檢查W鍵（向上移動）
     INVOKE GetAsyncKeyState, 'W'
     test ax, 8000h
-    jz CheckS
-    dec playerXY.Y           ; 玩家Y座標減少，向上移動
-
-CheckS:
-    ; 檢查S鍵（向下移動）
-    INVOKE GetAsyncKeyState, 'S'
-    test ax, 8000h
     jz CheckA
-    inc playerXY.Y           ; 玩家Y座標增加，向下移動
+	cmp onGround, 1
+	jne CheckA
+	mov ax, 5
+	sub velocityY, ax
+	mov onGround, 0
 
 CheckA:
     ; 檢查A鍵（向左移動）
@@ -80,7 +107,7 @@ CheckESC:
     INVOKE GetAsyncKeyState, VK_ESCAPE
     test ax, 8000h
     jz EndInput
-    exit                     ; 如果按下ESC，退出遊戲
+    INVOKE ExitProcess, 0    ; 如果按下ESC，退出遊戲
 
 EndInput:
 	ret
