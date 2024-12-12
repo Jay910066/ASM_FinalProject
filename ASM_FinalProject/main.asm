@@ -14,13 +14,13 @@ playerXY COORD <10,5>
 velocityY SWORD 0
 
 groundLevel WORD 25
-onGround DWORD 1
+onGround BYTE 1
 
 
 cellsWritten DWORD ?
 playerAttributes WORD playerSize DUP(0bh)
 
-updateInterval DWORD 100 ; 100ms each update
+updateInterval WORD 50 ; 100ms each update
 
 startTime DWORD ?
 elapsedTime DWORD ?
