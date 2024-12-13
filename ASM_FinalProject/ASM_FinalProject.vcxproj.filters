@@ -26,5 +26,8 @@
     <Text Include="finish.txt">
       <Filter>來源檔案</Filter>
     </Text>
+    <Text Include="gamefield.txt">
+      <Filter>來源檔案</Filter>
+    </Text>
   </ItemGroup>
 </Project>

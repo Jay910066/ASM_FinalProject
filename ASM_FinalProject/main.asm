@@ -26,9 +26,14 @@ updateInterval WORD 50 ; 100ms each update
 startTime DWORD ?
 elapsedTime DWORD ?
 timeLimit DWORD 600 ; 600 seconds
-TimerXY COORD <1,1>
+TimerXY COORD <0,0>
 
-buffer BYTE 3100 DUP(?)
+gamescrfile BYTE 'gamefield.txt',0
+gamefilehandle HANDLE ?
+gamebytesRead DWORD ?
+gamescrBytesWritten DWORD ?
+
+buffer BYTE 3500 DUP(?)
 initialscrfile BYTE 'start.txt',0
 initialfilehandle HANDLE ?
 initialbytesRead DWORD ?
@@ -90,6 +95,7 @@ conti:
 GameLoop:
 	call Clrscr
 	call updatePhysics
+	call displayGamescr
 	call drawPlayer
 	call displayTime
 	call readInput
@@ -185,6 +191,29 @@ drawPlayer PROC
 	OFFSET count
 	ret
 drawPlayer ENDP
+
+displayGamescr PROC uses eax ebx ecx edx
+    ;打開文字檔案
+	INVOKE CreateFile, ADDR gamescrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
+	mov gamefilehandle, eax
+
+ReadLoop:
+	;使用UTF-8編碼，顯示符號
+	INVOKE SetConsoleOutputCP, 65001
+
+	;讀取檔案
+	INVOKE ReadFile, gamefilehandle, ADDR buffer, SIZEOF buffer, ADDR gamebytesRead, NULL
+
+	;畫面更新及輸出檔案
+	call Clrscr
+	INVOKE SetFilePointer, gamefilehandle, 0, NULL, FILE_BEGIN
+	INVOKE WriteConsole, outputhandle, ADDR buffer, gamebytesRead, ADDR gamescrBytesWritten, NULL
+
+EndDisplay:
+	;關閉檔案
+    INVOKE CloseHandle, gamefilehandle
+    ret
+displayGamescr ENDP
 
 displayTime PROC uses eax ebx ecx edx
 	INVOKE GetTickCount

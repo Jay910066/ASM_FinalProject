@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/13/24 17:11:54
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/13/24 18:57:23
 main.asm						     Page 1 - 1
 
 
@@ -49,54 +49,61 @@ main.asm						     Page 1 - 1
  0000001F 00000000		startTime DWORD ?
  00000023 00000000		elapsedTime DWORD ?
  00000027 00000258		timeLimit DWORD 600 ; 600 seconds
- 0000002B 0001 0001		TimerXY COORD <1,1>
+ 0000002B 0000 0000		TimerXY COORD <0,0>
 
- 0000002F  00000C1C [		buffer BYTE 3100 DUP(?)
+ 0000002F 67 61 6D 65 66	gamescrfile BYTE 'gamefield.txt',0
+	   69 65 6C 64 2E
+	   74 78 74 00
+ 0000003D 00000000		gamefilehandle HANDLE ?
+ 00000041 00000000		gamebytesRead DWORD ?
+ 00000045 00000000		gamescrBytesWritten DWORD ?
+
+ 00000049  00000DAC [		buffer BYTE 3500 DUP(?)
 	    00
 	   ]
- 00000C4B 73 74 61 72 74	initialscrfile BYTE 'start.txt',0
+ 00000DF5 73 74 61 72 74	initialscrfile BYTE 'start.txt',0
 	   2E 74 78 74 00
- 00000C55 00000000		initialfilehandle HANDLE ?
- 00000C59 00000000		initialbytesRead DWORD ?
- 00000C5D 00000000		initialscrBytesWritten DWORD ?
- 00000C61 00			initialKeyPos Byte 0
- 00000C62 00			initialconfirm Byte 0
+ 00000DFF 00000000		initialfilehandle HANDLE ?
+ 00000E03 00000000		initialbytesRead DWORD ?
+ 00000E07 00000000		initialscrBytesWritten DWORD ?
+ 00000E0B 00			initialKeyPos Byte 0
+ 00000E0C 00			initialconfirm Byte 0
 
- 00000C63 0031 0011		initialStartLeftPos COORD <49,17>
- 00000C67 0000003E		initialStartLeftSymbol DWORD '>',0
+ 00000E0D 0031 0011		initialStartLeftPos COORD <49,17>
+ 00000E11 0000003E		initialStartLeftSymbol DWORD '>',0
 	   00000000
- 00000C6F 0049 0011		initialStartRightPos COORD <73,17>
- 00000C73 0000003C		initialStartRightSymbol DWORD '<',0
-	   00000000
-
- 00000C7B 0031 0017		initialExitLeftPos COORD <49,23>
- 00000C7F 0000003E		initialExitLeftSymbol DWORD '>',0
-	   00000000
- 00000C87 0049 0017		initialExitRightPos COORD <73,23>
- 00000C8B 0000003C		initialExitRightSymbol DWORD '<',0
+ 00000E19 0049 0011		initialStartRightPos COORD <73,17>
+ 00000E1D 0000003C		initialStartRightSymbol DWORD '<',0
 	   00000000
 
- 00000C93 66 69 6E 69 73	endscrfile BYTE 'finish.txt',0
+ 00000E25 0031 0017		initialExitLeftPos COORD <49,23>
+ 00000E29 0000003E		initialExitLeftSymbol DWORD '>',0
+	   00000000
+ 00000E31 0049 0017		initialExitRightPos COORD <73,23>
+ 00000E35 0000003C		initialExitRightSymbol DWORD '<',0
+	   00000000
+
+ 00000E3D 66 69 6E 69 73	endscrfile BYTE 'finish.txt',0
 	   68 2E 74 78 74
 	   00
- 00000C9E 00000000		endfilehandle HANDLE ?
- 00000CA2 00000000		endbytesRead DWORD ?
- 00000CA6 00000000		endscrBytesWritten DWORD ?
- 00000CAA 00			endKeyPos Byte 0
- 00000CAB 00			endconfirm Byte 0
+ 00000E48 00000000		endfilehandle HANDLE ?
+ 00000E4C 00000000		endbytesRead DWORD ?
+ 00000E50 00000000		endscrBytesWritten DWORD ?
+ 00000E54 00			endKeyPos Byte 0
+ 00000E55 00			endconfirm Byte 0
 
- 00000CAC 001E 0014		endStartLeftPos COORD <30,20>
- 00000CB0 0000003E		endStartLeftSymbol DWORD '>',0
+ 00000E56 001E 0014		endStartLeftPos COORD <30,20>
+ 00000E5A 0000003E		endStartLeftSymbol DWORD '>',0
 	   00000000
- 00000CB8 0037 0014		endStartRightPos COORD <55,20>
- 00000CBC 0000003C		endStartRightSymbol DWORD '<',0
+ 00000E62 0037 0014		endStartRightPos COORD <55,20>
+ 00000E66 0000003C		endStartRightSymbol DWORD '<',0
 	   00000000
 
- 00000CC4 0044 0014		endExitLeftPos COORD <68,20>
- 00000CC8 0000003E		endExitLeftSymbol DWORD '>',0
+ 00000E6E 0044 0014		endExitLeftPos COORD <68,20>
+ 00000E72 0000003E		endExitLeftSymbol DWORD '>',0
 	   00000000
- 00000CD0 005D 0014		endExitRightPos COORD <93,20>
- 00000CD4 0000003C		endExitRightSymbol DWORD '<',0
+ 00000E7A 005D 0014		endExitRightPos COORD <93,20>
+ 00000E7E 0000003C		endExitRightSymbol DWORD '<',0
 	   00000000
 
 
@@ -112,9 +119,9 @@ main.asm						     Page 1 - 1
 
  0000000C			initialLoop:
  0000000C  E8 00000000 E		call Clrscr
- 00000011  E8 00000196			call displayInitialscr
- 00000016  E8 000002AD			call readInputInitialscr
- 0000001B  80 3D 00000C62 R		cmp Initialconfirm, 1
+ 00000011  E8 00000229			call displayInitialscr
+ 00000016  E8 00000340			call readInputInitialscr
+ 0000001B  80 3D 00000E0C R		cmp Initialconfirm, 1
 	   01
  00000022  74 02			je conti
  00000024  EB E6			jmp initialLoop
@@ -127,105 +134,106 @@ main.asm						     Page 1 - 1
 					
  00000037			GameLoop:
  00000037  E8 00000000 E		call Clrscr
- 0000003C  E8 0000004A			call updatePhysics
- 00000041  E8 000000F1			call drawPlayer
- 00000046  E8 00000127			call displayTime
- 0000004B  E8 00000082			call readInput
- 00000050  80 3D 00000016 R		cmp  escConfirm, 1
+ 0000003C  E8 0000004F			call updatePhysics
+ 00000041  E8 00000131			call displayGamescr
+ 00000046  E8 000000F1			call drawPlayer
+ 0000004B  E8 000001B5			call displayTime
+ 00000050  E8 00000082			call readInput
+ 00000055  80 3D 00000016 R		cmp  escConfirm, 1
 	   01
- 00000057  74 11			je endLoop
+ 0000005C  74 11			je endLoop
 					invoke Sleep, updateInterval
- 00000068  EB CD			jmp GameLoop
+ 0000006D  EB C8			jmp GameLoop
 
- 0000006A			endLoop:
- 0000006A  E8 00000000 E		call Clrscr
- 0000006F  E8 000002BB			call displayEndscr
- 00000074  E8 000003D2			call readInputEndscr
- 00000079  80 3D 00000CAB R		cmp endconfirm, 1
+ 0000006F			endLoop:
+ 0000006F  E8 00000000 E		call Clrscr
+ 00000074  E8 00000349			call displayEndscr
+ 00000079  E8 00000460			call readInputEndscr
+ 0000007E  80 3D 00000E55 R		cmp endconfirm, 1
 	   01
- 00000080  74 A4			je conti
- 00000082  EB E6			jmp endLoop
+ 00000085  74 9F			je conti
+ 00000087  EB E6			jmp endLoop
 
 					exit
- 0000008B			main ENDP
+ 00000090			main ENDP
 
- 0000008B			updatePhysics PROC uses eax ebx
+ 00000090			updatePhysics PROC uses eax ebx
 				    ; 1. 更新玩家的 Y 座標
- 0000008D  66| A1		    mov ax, velocityY
+ 00000092  66| A1		    mov ax, velocityY
 	   00000011 R
- 00000093  66| 01 05		    add playerXY.Y, ax        ; 根據垂直速度更新位置
+ 00000098  66| 01 05		    add playerXY.Y, ax        ; 根據垂直速度更新位置
 	   0000000F R
 
 				    ; 2. 應用重力（加速垂直速度）
- 0000009A  66| 83 05		    add velocityY, gravity    ; 重力影響：速度越來越快
+ 0000009F  66| 83 05		    add velocityY, gravity    ; 重力影響：速度越來越快
 	   00000011 R 01
 
 				    ; 3. 檢查是否低於地面
- 000000A2  66| A1		    mov ax, playerXY.Y
+ 000000A7  66| A1		    mov ax, playerXY.Y
 	   0000000F R
- 000000A8  66| 3B 05		    cmp ax, groundLevel
+ 000000AD  66| 3B 05		    cmp ax, groundLevel
 	   00000013 R
- 000000AF  7E 1E		    jle EndPhysics            ; 如果未超過地面，跳過地面處理
+ 000000B4  7E 1E		    jle EndPhysics            ; 如果未超過地面，跳過地面處理
 
 				    ; 如果超出地面，重置到地面
- 000000B1  66| A1		    mov ax, groundLevel
+ 000000B6  66| A1		    mov ax, groundLevel
 	   00000013 R
- 000000B7  66| A3		    mov playerXY.Y, ax        ; 將玩家重置到地面
+ 000000BC  66| A3		    mov playerXY.Y, ax        ; 將玩家重置到地面
 	   0000000F R
- 000000BD  66| C7 05		    mov velocityY, 0          ; 停止垂直運動
+ 000000C2  66| C7 05		    mov velocityY, 0          ; 停止垂直運動
 	   00000011 R
 	   0000
- 000000C6  C6 05 00000015 R	    mov onGround, 1           ; 標記玩家在地面上
+ 000000CB  C6 05 00000015 R	    mov onGround, 1           ; 標記玩家在地面上
 	   01
- 000000CD  EB 00		    jmp EndPhysics
+ 000000D2  EB 00		    jmp EndPhysics
 
- 000000CF			EndPhysics:
+ 000000D4			EndPhysics:
 				    ret
- 000000D2			updatePhysics ENDP
+ 000000D7			updatePhysics ENDP
 
- 000000D2			readInput PROC
+ 000000D7			readInput PROC
 				    ; 檢查W鍵（向上移動）
 				    INVOKE GetAsyncKeyState, 'W'
- 000000D9  66| A9 8000		    test ax, 8000h
- 000000DD  74 1B		    jz CheckA
- 000000DF  80 3D 00000015 R		cmp onGround, 1
+ 000000DE  66| A9 8000		    test ax, 8000h
+ 000000E2  74 1B		    jz CheckA
+ 000000E4  80 3D 00000015 R		cmp onGround, 1
 	   01
- 000000E6  75 12			jne CheckA
- 000000E8  66| B8 0005			mov ax, 5
- 000000EC  66| 29 05			sub velocityY, ax
+ 000000EB  75 12			jne CheckA
+ 000000ED  66| B8 0005			mov ax, 5
+ 000000F1  66| 29 05			sub velocityY, ax
 	   00000011 R
- 000000F3  C6 05 00000015 R		mov onGround, 0
+ 000000F8  C6 05 00000015 R		mov onGround, 0
 	   00
 
- 000000FA			CheckA:
+ 000000FF			CheckA:
 				    ; 檢查A鍵（向左移動）
 				    INVOKE GetAsyncKeyState, 'A'
- 00000101  66| A9 8000		    test ax, 8000h
- 00000105  74 07		    jz CheckD
- 00000107  66| FF 0D		    dec playerXY.X           ; 玩家X座標減少，向左移動
+ 00000106  66| A9 8000		    test ax, 8000h
+ 0000010A  74 07		    jz CheckD
+ 0000010C  66| FF 0D		    dec playerXY.X           ; 玩家X座標減少，向左移動
 	   0000000D R
 
- 0000010E			CheckD:
+ 00000113			CheckD:
 				    ; 檢查D鍵（向右移動）
 				    INVOKE GetAsyncKeyState, 'D'
- 00000115  66| A9 8000		    test ax, 8000h
- 00000119  74 07		    jz CheckESC
- 0000011B  66| FF 05		    inc playerXY.X           ; 玩家X座標增加，向右移動
+ 0000011A  66| A9 8000		    test ax, 8000h
+ 0000011E  74 07		    jz CheckESC
+ 00000120  66| FF 05		    inc playerXY.X           ; 玩家X座標增加，向右移動
 	   0000000D R
 
- 00000122			CheckESC:
+ 00000127			CheckESC:
 				    ; 檢查ESC鍵（退出遊戲）
 				    INVOKE GetAsyncKeyState, VK_ESCAPE
- 00000129  66| A9 8000		    test ax, 8000h
- 0000012D  74 07		    jz EndInput
- 0000012F  C6 05 00000016 R	    mov escConfirm,1
+ 0000012E  66| A9 8000		    test ax, 8000h
+ 00000132  74 07		    jz EndInput
+ 00000134  C6 05 00000016 R	    mov escConfirm,1
 	   01
 
- 00000136			EndInput:
- 00000136  C3				ret
- 00000137			readInput ENDP
+ 0000013B			EndInput:
+ 0000013B  C3				ret
+ 0000013C			readInput ENDP
 
- 00000137			drawPlayer PROC
+ 0000013C			drawPlayer PROC
 					INVOKE WriteConsoleOutputAttribute,
 					outputHandle, 
 					OFFSET playerAttributes,
@@ -239,32 +247,55 @@ main.asm						     Page 1 - 1
 					playerSize,
 					playerXY,
 					OFFSET count
- 00000171  C3				ret
- 00000172			drawPlayer ENDP
+ 00000176  C3				ret
+ 00000177			drawPlayer ENDP
 
- 00000172			displayTime PROC uses eax ebx ecx edx
+ 00000177			displayGamescr PROC uses eax ebx ecx edx
+				    ;打開文字檔案
+					INVOKE CreateFile, ADDR gamescrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
+ 00000197  A3 0000003D R		mov gamefilehandle, eax
+
+ 0000019C			ReadLoop:
+					;使用UTF-8編碼，顯示符號
+					INVOKE SetConsoleOutputCP, 65001
+
+					;讀取檔案
+					INVOKE ReadFile, gamefilehandle, ADDR buffer, SIZEOF buffer, ADDR gamebytesRead, NULL
+
+					;畫面更新及輸出檔案
+ 000001C2  E8 00000000 E		call Clrscr
+					INVOKE SetFilePointer, gamefilehandle, 0, NULL, FILE_BEGIN
+					INVOKE WriteConsole, outputhandle, ADDR buffer, gamebytesRead, ADDR gamescrBytesWritten, NULL
+
+ 000001F5			EndDisplay:
+					;關閉檔案
+				    INVOKE CloseHandle, gamefilehandle
+				    ret
+ 00000205			displayGamescr ENDP
+
+ 00000205			displayTime PROC uses eax ebx ecx edx
 					INVOKE GetTickCount
- 0000017B  2B 05 0000001F R		sub eax, startTime
- 00000181  99				cdq
- 00000182  BB 000003E8			mov ebx, 1000
- 00000187  F7 F3			div ebx
- 00000189  A3 00000023 R		mov elapsedTime, eax
- 0000018E  A1 00000027 R		mov eax, timeLimit
- 00000193  2B 05 00000023 R		sub eax, elapsedTime
+ 0000020E  2B 05 0000001F R		sub eax, startTime
+ 00000214  99				cdq
+ 00000215  BB 000003E8			mov ebx, 1000
+ 0000021A  F7 F3			div ebx
+ 0000021C  A3 00000023 R		mov elapsedTime, eax
+ 00000221  A1 00000027 R		mov eax, timeLimit
+ 00000226  2B 05 00000023 R		sub eax, elapsedTime
 
- 00000199  B2 01			mov dl, 1
- 0000019B  B6 01			mov dh, 1
- 0000019D  E8 00000000 E		call gotoxy
- 000001A2  E8 00000000 E		call WriteDec
+ 0000022C  B2 01			mov dl, 1
+ 0000022E  B6 01			mov dh, 1
+ 00000230  E8 00000000 E		call gotoxy
+ 00000235  E8 00000000 E		call WriteDec
 					ret
- 000001AC			displayTime ENDP
+ 0000023F			displayTime ENDP
 
- 000001AC			displayInitialscr PROC uses eax ebx ecx edx
+ 0000023F			displayInitialscr PROC uses eax ebx ecx edx
 				    ;打開文字檔案
 					INVOKE CreateFile, ADDR initialscrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
- 000001CC  A3 00000C55 R		mov initialfilehandle, eax
+ 0000025F  A3 00000DFF R		mov initialfilehandle, eax
 
- 000001D1			ReadLoop:
+ 00000264			ReadLoop:
 					;使用UTF-8編碼，顯示符號
 					INVOKE SetConsoleOutputCP, 65001
 
@@ -272,14 +303,14 @@ main.asm						     Page 1 - 1
 					INVOKE ReadFile, initialfilehandle, ADDR buffer, SIZEOF buffer, ADDR initialbytesRead, NULL
 
 					;畫面更新及輸出檔案
- 000001F7  E8 00000000 E		call Clrscr
+ 0000028A  E8 00000000 E		call Clrscr
 					INVOKE SetFilePointer, initialfilehandle, 0, NULL, FILE_BEGIN
 					INVOKE WriteConsole, outputhandle, ADDR buffer, initialbytesRead, ADDR initialscrBytesWritten, NULL
- 0000022A  80 3D 00000C61 R		cmp initialKeyPos, 1
+ 000002BD  80 3D 00000E0B R		cmp initialKeyPos, 1
 	   01
- 00000231  74 3C			je Pos2 
+ 000002C4  74 3C			je Pos2 
 
- 00000233			Pos1:
+ 000002C6			Pos1:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET initialStartLeftSymbol,
@@ -293,9 +324,9 @@ main.asm						     Page 1 - 1
 					1, 
 					initialStartRightPos,
 					OFFSET count
- 0000026D  EB 3A			jmp conti
+ 00000300  EB 3A			jmp conti
 
- 0000026F			Pos2:
+ 00000302			Pos2:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET initialExitLeftSymbol,
@@ -310,55 +341,55 @@ main.asm						     Page 1 - 1
 					initialExitRightPos,
 					OFFSET count
 
- 000002A9			conti:
+ 0000033C			conti:
 					INVOKE Sleep, updateInterval
 
- 000002B8			EndDisplay:
+ 0000034B			EndDisplay:
 					;關閉檔案
 				    INVOKE CloseHandle, initialfilehandle
 				    ret
- 000002C8			displayInitialscr ENDP
+ 0000035B			displayInitialscr ENDP
 
- 000002C8			readInputInitialscr PROC uses eax ebx ecx edx
+ 0000035B			readInputInitialscr PROC uses eax ebx ecx edx
 					INVOKE GetAsyncKeyState, VK_RETURN
- 000002D3  A9 00008000			test eax, 8000h                     
- 000002D8  74 1C		    jz checkW
- 000002DA  80 3D 00000C61 R		cmp initialKeyPos, 0 ;判斷按鍵位置
+ 00000366  A9 00008000			test eax, 8000h                     
+ 0000036B  74 1C		    jz checkW
+ 0000036D  80 3D 00000E0B R		cmp initialKeyPos, 0 ;判斷按鍵位置
 	   00
- 000002E1  74 07			je confirm
+ 00000374  74 07			je confirm
 					INVOKE ExitProcess, 0
 
- 000002EA			confirm:
- 000002EA  C6 05 00000C62 R		mov initialconfirm, 1
+ 0000037D			confirm:
+ 0000037D  C6 05 00000E0C R		mov initialconfirm, 1
 	   01
 					ret
 
- 000002F6			checkW:
+ 00000389			checkW:
 					INVOKE GetAsyncKeyState, 'W'
- 000002FD  A9 00008000			test eax, 8000h                     
- 00000302  74 0C		    jz checkS
- 00000304  C6 05 00000C61 R		mov initialKeyPos, 0
+ 00000390  A9 00008000			test eax, 8000h                     
+ 00000395  74 0C		    jz checkS
+ 00000397  C6 05 00000E0B R		mov initialKeyPos, 0
 	   00
 					ret
 
- 00000310			checkS:
+ 000003A3			checkS:
 					INVOKE GetAsyncKeyState, 'S'
- 00000317  A9 00008000			test eax, 8000h                     
- 0000031C  74 0C		    jz no_key_pressed
- 0000031E  C6 05 00000C61 R		mov initialKeyPos, 1
+ 000003AA  A9 00008000			test eax, 8000h                     
+ 000003AF  74 0C		    jz no_key_pressed
+ 000003B1  C6 05 00000E0B R		mov initialKeyPos, 1
 	   01
 					ret
 
- 0000032A			no_key_pressed:
+ 000003BD			no_key_pressed:
 					ret
- 0000032F			readInputInitialscr ENDP
+ 000003C2			readInputInitialscr ENDP
 
- 0000032F			displayEndscr PROC uses eax ebx ecx edx
+ 000003C2			displayEndscr PROC uses eax ebx ecx edx
 				    ;打開文字檔案
 					INVOKE CreateFile, ADDR endscrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
- 0000034F  A3 00000C9E R		mov endfilehandle, eax
+ 000003E2  A3 00000E48 R		mov endfilehandle, eax
 
- 00000354			ReadLoop:
+ 000003E7			ReadLoop:
 					;使用UTF-8編碼，顯示符號
 					INVOKE SetConsoleOutputCP, 65001
 
@@ -366,14 +397,14 @@ main.asm						     Page 1 - 1
 					INVOKE ReadFile, endfilehandle, ADDR buffer, SIZEOF buffer, ADDR endbytesRead, NULL
 
 					;畫面更新及輸出檔案
- 0000037A  E8 00000000 E		call Clrscr
+ 0000040D  E8 00000000 E		call Clrscr
 					INVOKE SetFilePointer, endfilehandle, 0, NULL, FILE_BEGIN
 					INVOKE WriteConsole, outputhandle, ADDR buffer, endbytesRead, ADDR endscrBytesWritten, NULL
- 000003AD  80 3D 00000CAA R		cmp endKeyPos, 1
+ 00000440  80 3D 00000E54 R		cmp endKeyPos, 1
 	   01
- 000003B4  74 3C			je Pos2 
+ 00000447  74 3C			je Pos2 
 
- 000003B6			Pos1:
+ 00000449			Pos1:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET endStartLeftSymbol,
@@ -387,9 +418,9 @@ main.asm						     Page 1 - 1
 					1, 
 					endStartRightPos,
 					OFFSET count
- 000003F0  EB 3A			jmp conti
+ 00000483  EB 3A			jmp conti
 
- 000003F2			Pos2:
+ 00000485			Pos2:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET endExitLeftSymbol,
@@ -404,51 +435,51 @@ main.asm						     Page 1 - 1
 					endExitRightPos,
 					OFFSET count
 
- 0000042C			conti:
+ 000004BF			conti:
 					INVOKE Sleep, updateInterval
 
- 0000043B			EndDisplay:
+ 000004CE			EndDisplay:
 					;關閉檔案
 				    INVOKE CloseHandle, endfilehandle
 				    ret
- 0000044B			displayEndscr ENDP
+ 000004DE			displayEndscr ENDP
 
- 0000044B			readInputEndscr PROC uses eax ebx ecx edx
+ 000004DE			readInputEndscr PROC uses eax ebx ecx edx
 					INVOKE GetAsyncKeyState, VK_RETURN
- 00000456  A9 00008000			test eax, 8000h                     
- 0000045B  74 1C		    jz checkA
- 0000045D  80 3D 00000CAA R		cmp endKeyPos, 0 ;判斷按鍵位置
+ 000004E9  A9 00008000			test eax, 8000h                     
+ 000004EE  74 1C		    jz checkA
+ 000004F0  80 3D 00000E54 R		cmp endKeyPos, 0 ;判斷按鍵位置
 	   00
- 00000464  74 07			je confirm
+ 000004F7  74 07			je confirm
 					INVOKE ExitProcess, 0
 
- 0000046D			confirm:
- 0000046D  C6 05 00000CAB R		mov endconfirm, 1
+ 00000500			confirm:
+ 00000500  C6 05 00000E55 R		mov endconfirm, 1
 	   01
 					ret
 
- 00000479			checkA:
+ 0000050C			checkA:
 					INVOKE GetAsyncKeyState, 'A'
- 00000480  A9 00008000			test eax, 8000h                     
- 00000485  74 0C		    jz checkD
- 00000487  C6 05 00000CAA R		mov endKeyPos, 0
+ 00000513  A9 00008000			test eax, 8000h                     
+ 00000518  74 0C		    jz checkD
+ 0000051A  C6 05 00000E54 R		mov endKeyPos, 0
 	   00
 					ret
 
- 00000493			checkD:
+ 00000526			checkD:
 					INVOKE GetAsyncKeyState, 'D'
- 0000049A  A9 00008000			test eax, 8000h                     
- 0000049F  74 0C		    jz no_key_pressed
- 000004A1  C6 05 00000CAA R		mov endKeyPos, 1
+ 0000052D  A9 00008000			test eax, 8000h                     
+ 00000532  74 0C		    jz no_key_pressed
+ 00000534  C6 05 00000E54 R		mov endKeyPos, 1
 	   01
 					ret
 
- 000004AD			no_key_pressed:
+ 00000540			no_key_pressed:
 					ret
- 000004B2			readInputEndscr ENDP
+ 00000545			readInputEndscr ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/13/24 17:11:54
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/13/24 18:57:23
 main.asm						     Symbols 2 - 1
 
 
@@ -542,8 +573,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00000CDC Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 000004B2 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000E86 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000545 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -652,44 +683,47 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-displayEndscr  . . . . . . . . .	P Near	 0000032F _TEXT	Length= 0000011C Public STDCALL
-  ReadLoop . . . . . . . . . . .	L Near	 00000354 _TEXT	
-  Pos1 . . . . . . . . . . . . .	L Near	 000003B6 _TEXT	
-  Pos2 . . . . . . . . . . . . .	L Near	 000003F2 _TEXT	
-  conti  . . . . . . . . . . . .	L Near	 0000042C _TEXT	
-  EndDisplay . . . . . . . . . .	L Near	 0000043B _TEXT	
-displayInitialscr  . . . . . . .	P Near	 000001AC _TEXT	Length= 0000011C Public STDCALL
-  ReadLoop . . . . . . . . . . .	L Near	 000001D1 _TEXT	
-  Pos1 . . . . . . . . . . . . .	L Near	 00000233 _TEXT	
-  Pos2 . . . . . . . . . . . . .	L Near	 0000026F _TEXT	
-  conti  . . . . . . . . . . . .	L Near	 000002A9 _TEXT	
-  EndDisplay . . . . . . . . . .	L Near	 000002B8 _TEXT	
-displayTime  . . . . . . . . . .	P Near	 00000172 _TEXT	Length= 0000003A Public STDCALL
-drawPlayer . . . . . . . . . . .	P Near	 00000137 _TEXT	Length= 0000003B Public STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000008B Public STDCALL
+displayEndscr  . . . . . . . . .	P Near	 000003C2 _TEXT	Length= 0000011C Public STDCALL
+  ReadLoop . . . . . . . . . . .	L Near	 000003E7 _TEXT	
+  Pos1 . . . . . . . . . . . . .	L Near	 00000449 _TEXT	
+  Pos2 . . . . . . . . . . . . .	L Near	 00000485 _TEXT	
+  conti  . . . . . . . . . . . .	L Near	 000004BF _TEXT	
+  EndDisplay . . . . . . . . . .	L Near	 000004CE _TEXT	
+displayGamescr . . . . . . . . .	P Near	 00000177 _TEXT	Length= 0000008E Public STDCALL
+  ReadLoop . . . . . . . . . . .	L Near	 0000019C _TEXT	
+  EndDisplay . . . . . . . . . .	L Near	 000001F5 _TEXT	
+displayInitialscr  . . . . . . .	P Near	 0000023F _TEXT	Length= 0000011C Public STDCALL
+  ReadLoop . . . . . . . . . . .	L Near	 00000264 _TEXT	
+  Pos1 . . . . . . . . . . . . .	L Near	 000002C6 _TEXT	
+  Pos2 . . . . . . . . . . . . .	L Near	 00000302 _TEXT	
+  conti  . . . . . . . . . . . .	L Near	 0000033C _TEXT	
+  EndDisplay . . . . . . . . . .	L Near	 0000034B _TEXT	
+displayTime  . . . . . . . . . .	P Near	 00000205 _TEXT	Length= 0000003A Public STDCALL
+drawPlayer . . . . . . . . . . .	P Near	 0000013C _TEXT	Length= 0000003B Public STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000090 Public STDCALL
   initialLoop  . . . . . . . . .	L Near	 0000000C _TEXT	
   conti  . . . . . . . . . . . .	L Near	 00000026 _TEXT	
   GameLoop . . . . . . . . . . .	L Near	 00000037 _TEXT	
-  endLoop  . . . . . . . . . . .	L Near	 0000006A _TEXT	
+  endLoop  . . . . . . . . . . .	L Near	 0000006F _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
-readInputEndscr  . . . . . . . .	P Near	 0000044B _TEXT	Length= 00000067 Public STDCALL
-  confirm  . . . . . . . . . . .	L Near	 0000046D _TEXT	
-  checkA . . . . . . . . . . . .	L Near	 00000479 _TEXT	
-  checkD . . . . . . . . . . . .	L Near	 00000493 _TEXT	
-  no_key_pressed . . . . . . . .	L Near	 000004AD _TEXT	
-readInputInitialscr  . . . . . .	P Near	 000002C8 _TEXT	Length= 00000067 Public STDCALL
-  confirm  . . . . . . . . . . .	L Near	 000002EA _TEXT	
-  checkW . . . . . . . . . . . .	L Near	 000002F6 _TEXT	
-  checkS . . . . . . . . . . . .	L Near	 00000310 _TEXT	
-  no_key_pressed . . . . . . . .	L Near	 0000032A _TEXT	
-readInput  . . . . . . . . . . .	P Near	 000000D2 _TEXT	Length= 00000065 Public STDCALL
-  CheckA . . . . . . . . . . . .	L Near	 000000FA _TEXT	
-  CheckD . . . . . . . . . . . .	L Near	 0000010E _TEXT	
-  CheckESC . . . . . . . . . . .	L Near	 00000122 _TEXT	
-  EndInput . . . . . . . . . . .	L Near	 00000136 _TEXT	
+readInputEndscr  . . . . . . . .	P Near	 000004DE _TEXT	Length= 00000067 Public STDCALL
+  confirm  . . . . . . . . . . .	L Near	 00000500 _TEXT	
+  checkA . . . . . . . . . . . .	L Near	 0000050C _TEXT	
+  checkD . . . . . . . . . . . .	L Near	 00000526 _TEXT	
+  no_key_pressed . . . . . . . .	L Near	 00000540 _TEXT	
+readInputInitialscr  . . . . . .	P Near	 0000035B _TEXT	Length= 00000067 Public STDCALL
+  confirm  . . . . . . . . . . .	L Near	 0000037D _TEXT	
+  checkW . . . . . . . . . . . .	L Near	 00000389 _TEXT	
+  checkS . . . . . . . . . . . .	L Near	 000003A3 _TEXT	
+  no_key_pressed . . . . . . . .	L Near	 000003BD _TEXT	
+readInput  . . . . . . . . . . .	P Near	 000000D7 _TEXT	Length= 00000065 Public STDCALL
+  CheckA . . . . . . . . . . . .	L Near	 000000FF _TEXT	
+  CheckD . . . . . . . . . . . .	L Near	 00000113 _TEXT	
+  CheckESC . . . . . . . . . . .	L Near	 00000127 _TEXT	
+  EndInput . . . . . . . . . . .	L Near	 0000013B _TEXT	
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
-updatePhysics  . . . . . . . . .	P Near	 0000008B _TEXT	Length= 00000047 Public STDCALL
-  EndPhysics . . . . . . . . . .	L Near	 000000CF _TEXT	
+updatePhysics  . . . . . . . . .	P Near	 00000090 _TEXT	Length= 00000047 Public STDCALL
+  EndPhysics . . . . . . . . . .	L Near	 000000D4 _TEXT	
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 
 
@@ -910,46 +944,50 @@ WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
-buffer . . . . . . . . . . . . .	Byte	 0000002F _DATA	
+buffer . . . . . . . . . . . . .	Byte	 00000049 _DATA	
 bytesWritten . . . . . . . . . .	DWord	 00000005 _DATA	
 cellsWritten . . . . . . . . . .	DWord	 00000017 _DATA	
 count  . . . . . . . . . . . . .	DWord	 00000009 _DATA	
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
 elapsedTime  . . . . . . . . . .	DWord	 00000023 _DATA	
-endExitLeftPos . . . . . . . . .	COORD	 00000CC4 _DATA	
-endExitLeftSymbol  . . . . . . .	DWord	 00000CC8 _DATA	
-endExitRightPos  . . . . . . . .	COORD	 00000CD0 _DATA	
-endExitRightSymbol . . . . . . .	DWord	 00000CD4 _DATA	
-endKeyPos  . . . . . . . . . . .	Byte	 00000CAA _DATA	
-endStartLeftPos  . . . . . . . .	COORD	 00000CAC _DATA	
-endStartLeftSymbol . . . . . . .	DWord	 00000CB0 _DATA	
-endStartRightPos . . . . . . . .	COORD	 00000CB8 _DATA	
-endStartRightSymbol  . . . . . .	DWord	 00000CBC _DATA	
-endbytesRead . . . . . . . . . .	DWord	 00000CA2 _DATA	
-endconfirm . . . . . . . . . . .	Byte	 00000CAB _DATA	
-endfilehandle  . . . . . . . . .	DWord	 00000C9E _DATA	
-endscrBytesWritten . . . . . . .	DWord	 00000CA6 _DATA	
-endscrfile . . . . . . . . . . .	Byte	 00000C93 _DATA	
+endExitLeftPos . . . . . . . . .	COORD	 00000E6E _DATA	
+endExitLeftSymbol  . . . . . . .	DWord	 00000E72 _DATA	
+endExitRightPos  . . . . . . . .	COORD	 00000E7A _DATA	
+endExitRightSymbol . . . . . . .	DWord	 00000E7E _DATA	
+endKeyPos  . . . . . . . . . . .	Byte	 00000E54 _DATA	
+endStartLeftPos  . . . . . . . .	COORD	 00000E56 _DATA	
+endStartLeftSymbol . . . . . . .	DWord	 00000E5A _DATA	
+endStartRightPos . . . . . . . .	COORD	 00000E62 _DATA	
+endStartRightSymbol  . . . . . .	DWord	 00000E66 _DATA	
+endbytesRead . . . . . . . . . .	DWord	 00000E4C _DATA	
+endconfirm . . . . . . . . . . .	Byte	 00000E55 _DATA	
+endfilehandle  . . . . . . . . .	DWord	 00000E48 _DATA	
+endscrBytesWritten . . . . . . .	DWord	 00000E50 _DATA	
+endscrfile . . . . . . . . . . .	Byte	 00000E3D _DATA	
 escConfirm . . . . . . . . . . .	Byte	 00000016 _DATA	
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+gamebytesRead  . . . . . . . . .	DWord	 00000041 _DATA	
+gamefilehandle . . . . . . . . .	DWord	 0000003D _DATA	
+gamescrBytesWritten  . . . . . .	DWord	 00000045 _DATA	
+gamescrfile  . . . . . . . . . .	Byte	 0000002F _DATA	
 gravity  . . . . . . . . . . . .	Number	 00000001h   
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
 groundLevel  . . . . . . . . . .	Word	 00000013 _DATA	
-initialExitLeftPos . . . . . . .	COORD	 00000C7B _DATA	
-initialExitLeftSymbol  . . . . .	DWord	 00000C7F _DATA	
-initialExitRightPos  . . . . . .	COORD	 00000C87 _DATA	
-initialExitRightSymbol . . . . .	DWord	 00000C8B _DATA	
-initialKeyPos  . . . . . . . . .	Byte	 00000C61 _DATA	
-initialStartLeftPos  . . . . . .	COORD	 00000C63 _DATA	
-initialStartLeftSymbol . . . . .	DWord	 00000C67 _DATA	
-initialStartRightPos . . . . . .	COORD	 00000C6F _DATA	
-initialStartRightSymbol  . . . .	DWord	 00000C73 _DATA	
-initialbytesRead . . . . . . . .	DWord	 00000C59 _DATA	
-initialconfirm . . . . . . . . .	Byte	 00000C62 _DATA	
-initialfilehandle  . . . . . . .	DWord	 00000C55 _DATA	
-initialscrBytesWritten . . . . .	DWord	 00000C5D _DATA	
-initialscrfile . . . . . . . . .	Byte	 00000C4B _DATA	
+initialExitLeftPos . . . . . . .	COORD	 00000E25 _DATA	
+initialExitLeftSymbol  . . . . .	DWord	 00000E29 _DATA	
+initialExitRightPos  . . . . . .	COORD	 00000E31 _DATA	
+initialExitRightSymbol . . . . .	DWord	 00000E35 _DATA	
+initialKeyPos  . . . . . . . . .	Byte	 00000E0B _DATA	
+initialStartLeftPos  . . . . . .	COORD	 00000E0D _DATA	
+initialStartLeftSymbol . . . . .	DWord	 00000E11 _DATA	
+initialStartRightPos . . . . . .	COORD	 00000E19 _DATA	
+initialStartRightSymbol  . . . .	DWord	 00000E1D _DATA	
+initialbytesRead . . . . . . . .	DWord	 00000E03 _DATA	
+initialconfirm . . . . . . . . .	Byte	 00000E0C _DATA	
+initialfilehandle  . . . . . . .	DWord	 00000DFF _DATA	
+initialscrBytesWritten . . . . .	DWord	 00000E07 _DATA	
+initialscrfile . . . . . . . . .	Byte	 00000DF5 _DATA	
 jumpForce  . . . . . . . . . . .	Number	 -00000005h   
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
