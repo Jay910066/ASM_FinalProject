@@ -19,4 +19,12 @@
       <Filter>資源檔</Filter>
     </MASM>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="start.txt">
+      <Filter>來源檔案</Filter>
+    </Text>
+    <Text Include="finish.txt">
+      <Filter>來源檔案</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

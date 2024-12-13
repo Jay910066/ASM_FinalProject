@@ -27,6 +27,15 @@ elapsedTime DWORD ?
 timeLimit DWORD 600 ; 600 seconds
 TimerXY COORD <1,1>
 
+buffer BYTE 2048 DUP(?)
+startscrfile BYTE 'start.txt',0
+startfilehandle HANDLE ?
+startbytesRead DWORD ?
+startscrBytesWritten DWORD ?
+startKeyPos Byte 0
+startconfirm Byte 0
+
+
 .code
 	SetConsoleOutputCP PROTO STDCALL :DWORD
 	GetAsyncKeyState PROTO STDCALL :DWORD
@@ -36,8 +45,16 @@ main PROC
 	; Get the console ouput handle
 	INVOKE GetStdHandle, STD_OUTPUT_HANDLE
 	mov outputHandle, eax	; save console handle
-	call Clrscr
 
+startLoop:
+	call Clrscr
+	call displayStartscr
+	call readInput_startscr
+	cmp startconfirm, 1
+	je conti
+	jmp startLoop
+
+conti:
 	INVOKE GetTickCount
 	mov startTime, eax
 	
@@ -146,5 +163,60 @@ displayTime PROC uses eax ebx ecx edx
 	call WriteDec
 	ret
 displayTime ENDP
+
+displayStartscr PROC uses eax ebx ecx edx
+    ;打開文字檔案
+	INVOKE CreateFile, ADDR startscrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
+	mov startfilehandle, eax
+
+ReadLoop:
+	;使用UTF-8編碼，顯示符號
+	INVOKE SetConsoleOutputCP, 65001
+
+	;讀取檔案
+	INVOKE ReadFile, startfilehandle, ADDR buffer, SIZEOF buffer, ADDR startbytesRead, NULL
+
+	;畫面更新及輸出檔案
+	call Clrscr
+	INVOKE SetFilePointer, startfilehandle, 0, NULL, FILE_BEGIN
+	INVOKE WriteConsole, outputhandle, ADDR buffer, startbytesRead, ADDR startscrBytesWritten, NULL
+	INVOKE Sleep, updateInterval
+
+EndDisplay:
+	;關閉檔案
+    INVOKE CloseHandle, startfilehandle
+    ret
+displayStartscr ENDP
+
+readInput_startscr PROC uses eax ebx ecx edx
+	INVOKE GetAsyncKeyState, VK_RETURN
+	test eax, 8000h                     
+    jz checkW
+	cmp startKeyPos, 0 ;判斷按鍵位置
+	je confirm
+	INVOKE ExitProcess, 0
+
+confirm:
+	mov startconfirm, 1
+	ret
+
+checkW:
+	INVOKE GetAsyncKeyState, 'W'
+	test eax, 8000h                     
+    jz checkS
+	mov startKeyPos, 0
+	ret
+
+checkS:
+	INVOKE GetAsyncKeyState, 'S'
+	test eax, 8000h                     
+    jz no_key_pressed
+	mov startKeyPos, 1
+	ret
+
+no_key_pressed:
+	ret
+readInput_startscr ENDP
+
 
 END main
