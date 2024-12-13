@@ -2,13 +2,13 @@
 
                    ╭───────────────────────────────────────────────────────────────────────────────────╮
                    │                                                                                   │
-                   │      remaining time                                                               │
+                   │      remaining time  :                                                            │
                    │                                                                                   │
                    │                                                                                   │
-                   │      number of coins                                                              │
+                   │      number of coins :                                                            │
                    │                                                                                   │
                    │                                                                                   │
-                   │      total of points                                                              │
+                   │      total of points :                                                            │
                    │                                                                                   │
                    │                                                                                   │
                    │                                                                                   │
