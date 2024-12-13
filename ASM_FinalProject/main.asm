@@ -16,6 +16,7 @@ velocityY SWORD 0
 groundLevel WORD 25
 onGround BYTE 1
 
+escConfirm byte 0
 
 cellsWritten DWORD ?
 playerAttributes WORD playerSize DUP(0bh)
@@ -27,13 +28,40 @@ elapsedTime DWORD ?
 timeLimit DWORD 600 ; 600 seconds
 TimerXY COORD <1,1>
 
-buffer BYTE 2048 DUP(?)
-startscrfile BYTE 'start.txt',0
-startfilehandle HANDLE ?
-startbytesRead DWORD ?
-startscrBytesWritten DWORD ?
-startKeyPos Byte 0
-startconfirm Byte 0
+buffer BYTE 3100 DUP(?)
+initialscrfile BYTE 'start.txt',0
+initialfilehandle HANDLE ?
+initialbytesRead DWORD ?
+initialscrBytesWritten DWORD ?
+initialKeyPos Byte 0
+initialconfirm Byte 0
+
+initialStartLeftPos COORD <49,17>
+initialStartLeftSymbol DWORD '>',0
+initialStartRightPos COORD <73,17>
+initialStartRightSymbol DWORD '<',0
+
+initialExitLeftPos COORD <49,23>
+initialExitLeftSymbol DWORD '>',0
+initialExitRightPos COORD <73,23>
+initialExitRightSymbol DWORD '<',0
+
+endscrfile BYTE 'finish.txt',0
+endfilehandle HANDLE ?
+endbytesRead DWORD ?
+endscrBytesWritten DWORD ?
+endKeyPos Byte 0
+endconfirm Byte 0
+
+endStartLeftPos COORD <30,20>
+endStartLeftSymbol DWORD '>',0
+endStartRightPos COORD <55,20>
+endStartRightSymbol DWORD '<',0
+
+endExitLeftPos COORD <68,20>
+endExitLeftSymbol DWORD '>',0
+endExitRightPos COORD <93,20>
+endExitRightSymbol DWORD '<',0
 
 
 .code
@@ -46,17 +74,18 @@ main PROC
 	INVOKE GetStdHandle, STD_OUTPUT_HANDLE
 	mov outputHandle, eax	; save console handle
 
-startLoop:
+initialLoop:
 	call Clrscr
-	call displayStartscr
-	call readInput_startscr
-	cmp startconfirm, 1
+	call displayInitialscr
+	call readInputInitialscr
+	cmp Initialconfirm, 1
 	je conti
-	jmp startLoop
+	jmp initialLoop
 
 conti:
 	INVOKE GetTickCount
 	mov startTime, eax
+	mov escConfirm, 0
 	
 GameLoop:
 	call Clrscr
@@ -64,8 +93,18 @@ GameLoop:
 	call drawPlayer
 	call displayTime
 	call readInput
+	cmp  escConfirm, 1
+	je endLoop
 	invoke Sleep, updateInterval
 	jmp GameLoop
+
+endLoop:
+	call Clrscr
+	call displayEndscr
+	call readInputEndscr
+	cmp endconfirm, 1
+	je conti
+	jmp endLoop
 
 	exit
 main ENDP
@@ -124,7 +163,7 @@ CheckESC:
     INVOKE GetAsyncKeyState, VK_ESCAPE
     test ax, 8000h
     jz EndInput
-    INVOKE ExitProcess, 0    ; 如果按下ESC，退出遊戲
+    mov escConfirm,1
 
 EndInput:
 	ret
@@ -164,59 +203,182 @@ displayTime PROC uses eax ebx ecx edx
 	ret
 displayTime ENDP
 
-displayStartscr PROC uses eax ebx ecx edx
+displayInitialscr PROC uses eax ebx ecx edx
     ;打開文字檔案
-	INVOKE CreateFile, ADDR startscrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
-	mov startfilehandle, eax
+	INVOKE CreateFile, ADDR initialscrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
+	mov initialfilehandle, eax
 
 ReadLoop:
 	;使用UTF-8編碼，顯示符號
 	INVOKE SetConsoleOutputCP, 65001
 
 	;讀取檔案
-	INVOKE ReadFile, startfilehandle, ADDR buffer, SIZEOF buffer, ADDR startbytesRead, NULL
+	INVOKE ReadFile, initialfilehandle, ADDR buffer, SIZEOF buffer, ADDR initialbytesRead, NULL
 
 	;畫面更新及輸出檔案
 	call Clrscr
-	INVOKE SetFilePointer, startfilehandle, 0, NULL, FILE_BEGIN
-	INVOKE WriteConsole, outputhandle, ADDR buffer, startbytesRead, ADDR startscrBytesWritten, NULL
+	INVOKE SetFilePointer, initialfilehandle, 0, NULL, FILE_BEGIN
+	INVOKE WriteConsole, outputhandle, ADDR buffer, initialbytesRead, ADDR initialscrBytesWritten, NULL
+	cmp initialKeyPos, 1
+	je Pos2 
+
+Pos1:
+	INVOKE WriteConsoleOutputCharacter,
+	outputHandle, 
+	OFFSET initialStartLeftSymbol,
+	1, 
+	initialStartLeftPos,
+	OFFSET count
+
+	INVOKE WriteConsoleOutputCharacter,
+	outputHandle, 
+	OFFSET initialStartRightSymbol,
+	1, 
+	initialStartRightPos,
+	OFFSET count
+	jmp conti
+
+Pos2:
+	INVOKE WriteConsoleOutputCharacter,
+	outputHandle, 
+	OFFSET initialExitLeftSymbol,
+	1, 
+	initialExitLeftPos,
+	OFFSET count
+
+	INVOKE WriteConsoleOutputCharacter,
+	outputHandle, 
+	OFFSET initialExitRightSymbol,
+	1, 
+	initialExitRightPos,
+	OFFSET count
+
+conti:
 	INVOKE Sleep, updateInterval
 
 EndDisplay:
 	;關閉檔案
-    INVOKE CloseHandle, startfilehandle
+    INVOKE CloseHandle, initialfilehandle
     ret
-displayStartscr ENDP
+displayInitialscr ENDP
 
-readInput_startscr PROC uses eax ebx ecx edx
+readInputInitialscr PROC uses eax ebx ecx edx
 	INVOKE GetAsyncKeyState, VK_RETURN
 	test eax, 8000h                     
     jz checkW
-	cmp startKeyPos, 0 ;判斷按鍵位置
+	cmp initialKeyPos, 0 ;判斷按鍵位置
 	je confirm
 	INVOKE ExitProcess, 0
 
 confirm:
-	mov startconfirm, 1
+	mov initialconfirm, 1
 	ret
 
 checkW:
 	INVOKE GetAsyncKeyState, 'W'
 	test eax, 8000h                     
     jz checkS
-	mov startKeyPos, 0
+	mov initialKeyPos, 0
 	ret
 
 checkS:
 	INVOKE GetAsyncKeyState, 'S'
 	test eax, 8000h                     
     jz no_key_pressed
-	mov startKeyPos, 1
+	mov initialKeyPos, 1
 	ret
 
 no_key_pressed:
 	ret
-readInput_startscr ENDP
+readInputInitialscr ENDP
 
+displayEndscr PROC uses eax ebx ecx edx
+    ;打開文字檔案
+	INVOKE CreateFile, ADDR endscrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
+	mov endfilehandle, eax
+
+ReadLoop:
+	;使用UTF-8編碼，顯示符號
+	INVOKE SetConsoleOutputCP, 65001
+
+	;讀取檔案
+	INVOKE ReadFile, endfilehandle, ADDR buffer, SIZEOF buffer, ADDR endbytesRead, NULL
+
+	;畫面更新及輸出檔案
+	call Clrscr
+	INVOKE SetFilePointer, endfilehandle, 0, NULL, FILE_BEGIN
+	INVOKE WriteConsole, outputhandle, ADDR buffer, endbytesRead, ADDR endscrBytesWritten, NULL
+	cmp endKeyPos, 1
+	je Pos2 
+
+Pos1:
+	INVOKE WriteConsoleOutputCharacter,
+	outputHandle, 
+	OFFSET endStartLeftSymbol,
+	1, 
+	endStartLeftPos,
+	OFFSET count
+
+	INVOKE WriteConsoleOutputCharacter,
+	outputHandle, 
+	OFFSET endStartRightSymbol,
+	1, 
+	endStartRightPos,
+	OFFSET count
+	jmp conti
+
+Pos2:
+	INVOKE WriteConsoleOutputCharacter,
+	outputHandle, 
+	OFFSET endExitLeftSymbol,
+	1, 
+	endExitLeftPos,
+	OFFSET count
+
+	INVOKE WriteConsoleOutputCharacter,
+	outputHandle, 
+	OFFSET endExitRightSymbol,
+	1, 
+	endExitRightPos,
+	OFFSET count
+
+conti:
+	INVOKE Sleep, updateInterval
+
+EndDisplay:
+	;關閉檔案
+    INVOKE CloseHandle, endfilehandle
+    ret
+displayEndscr ENDP
+
+readInputEndscr PROC uses eax ebx ecx edx
+	INVOKE GetAsyncKeyState, VK_RETURN
+	test eax, 8000h                     
+    jz checkA
+	cmp endKeyPos, 0 ;判斷按鍵位置
+	je confirm
+	INVOKE ExitProcess, 0
+
+confirm:
+	mov endconfirm, 1
+	ret
+
+checkA:
+	INVOKE GetAsyncKeyState, 'A'
+	test eax, 8000h                     
+    jz checkD
+	mov endKeyPos, 0
+	ret
+
+checkD:
+	INVOKE GetAsyncKeyState, 'D'
+	test eax, 8000h                     
+    jz no_key_pressed
+	mov endKeyPos, 1
+	ret
+
+no_key_pressed:
+	ret
+readInputEndscr ENDP
 
 END main
