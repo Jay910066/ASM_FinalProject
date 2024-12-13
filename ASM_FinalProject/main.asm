@@ -35,7 +35,7 @@ gamebytesRead DWORD ?
 gamescrBytesWritten DWORD ?
 
 ;初始畫面資料
-buffer BYTE 3500 DUP(?)
+buffer BYTE 5000 DUP(?)
 initialscrfile BYTE 'start.txt',0
 initialfilehandle HANDLE ?
 initialbytesRead DWORD ?
