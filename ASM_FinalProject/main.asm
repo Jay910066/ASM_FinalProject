@@ -26,7 +26,7 @@ escConfirm byte 0
 cellsWritten DWORD ?
 playerAttributes WORD playerSize DUP(0bh)
 
-updateInterval WORD 50 ; 100ms each update
+updateInterval WORD 50 ; 50ms each update
 
 startTime DWORD ?
 elapsedTime DWORD ?
@@ -68,6 +68,7 @@ endconfirm Byte 0
 endCoinGot DWORD 0
 endTime DWORD 0
 needsRefresh BYTE 1
+isDead BYTE 0
 prevKeyPos BYTE 0
 
 endStartLeftPos COORD <30,20>
@@ -99,7 +100,7 @@ coinGet byte 0
 	GetAsyncKeyState PROTO STDCALL :DWORD
 	ReadConsoleOutputCharacterA PROTO STDCALL :DWORD, :PTR BYTE, :DWORD, :COORD, :PTR DWORD
 main PROC
-	;INVOKE SetConsoleOutputCP, 437
+	INVOKE SetConsoleOutputCP, 437
 
 	; Get the console ouput handle
 	INVOKE GetStdHandle, STD_OUTPUT_HANDLE
@@ -116,6 +117,10 @@ initialLoop:
 conti:
 	INVOKE GetTickCount
 	mov startTime, eax
+	mov playerXY.X, 10
+	mov playerXY.Y, 5
+	mov velocityY, 0
+	mov isDead, 0
 	mov escConfirm, 0
 	mov endConfirm, 0
 	mov coinGot, 0
@@ -174,6 +179,11 @@ updatePhysics PROC uses eax ebx
 		mov playerXY.Y, 0
 		mov platformLevel, 0
 	.ENDIF
+
+	; 檢查是否掉出螢幕下方
+	.IF playerXY.Y >= 29
+		mov isDead, 1
+	.ENDIF
     ; 更新玩家的 Y 座標
     mov ax, velocityY
     add playerXY.Y, ax        ; 根據垂直速度更新位置
@@ -227,7 +237,7 @@ detectPlatform:
 	mov cx, dx
 	loop detectPlatform
 
-; 輸出Debug訊息
+	; 輸出Debug訊息
 ;showINFO:
 	;mov dl, 0
 	;mov dh, 0
@@ -324,7 +334,6 @@ displayTime PROC uses eax ebx ecx edx
 	mov eax, timeLimit
 	sub eax, elapsedTime
 	mov endTime, eax
-
 	mov dl, 1
 	mov dh, 1
 	call gotoxy
@@ -599,6 +608,9 @@ point:
 	call gotoxy
 	mov eax, CoinGot
 	mul endTime
+	.IF isDead == 1
+		mov eax, 0
+	.ENDIF
 	call WriteDec
 
 	ret
@@ -637,6 +649,10 @@ endGame PROC uses eax ebx ecx edx
 
 	mov eax, endTime
 	cmp eax, 0
+	je equal
+
+	mov al, isDead
+	cmp al, 1
 	je equal
 	jmp end_program
 
