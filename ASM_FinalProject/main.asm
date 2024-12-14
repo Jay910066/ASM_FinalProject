@@ -1,11 +1,16 @@
 INCLUDE Irvine32.inc
+INCLUDELIB kernel32.lib
 
 playerSize = 1
 gravity = 1
-jumpForce = -5
+jumpForce = 5
 
 .data
 player BYTE 'P'
+
+platformBuffer BYTE 10 DUP(?)
+platformCoord COORD <0,0>
+charRead DWORD ?
 
 outputHandle DWORD 0
 bytesWritten DWORD 0
@@ -13,8 +18,8 @@ count DWORD 0
 playerXY COORD <10,5>
 velocityY SWORD 0
 
-groundLevel WORD 24
-onGround BYTE 1
+platformLevel WORD 24
+onPlatform BYTE 1
 
 escConfirm byte 0
 
@@ -92,6 +97,7 @@ coinGet byte 0
 .code
 	SetConsoleOutputCP PROTO STDCALL :DWORD
 	GetAsyncKeyState PROTO STDCALL :DWORD
+	ReadConsoleOutputCharacterA PROTO STDCALL :DWORD, :PTR BYTE, :DWORD, :COORD, :PTR DWORD
 main PROC
 	;INVOKE SetConsoleOutputCP, 437
 
@@ -119,6 +125,7 @@ GameLoop:
 	call updatePhysics
 	call displayGamescr
 	call drawPlayer
+	call checkPlatformLevel
 	call displayTime
 	call displayCoinGot
 	call readInput
@@ -162,39 +169,85 @@ SkipRefresh:
 main ENDP
 
 updatePhysics PROC uses eax ebx
-    ; 1. 更新玩家的 Y 座標
+	; 檢查是否超出螢幕上方
+	.IF playerXY.Y >= 60000
+		mov playerXY.Y, 0
+		mov platformLevel, 0
+	.ENDIF
+    ; 更新玩家的 Y 座標
     mov ax, velocityY
     add playerXY.Y, ax        ; 根據垂直速度更新位置
 
-    ; 2. 應用重力（加速垂直速度）
+    ; 應用重力（加速垂直速度）
     add velocityY, gravity    ; 重力影響：速度越來越快
 
-    ; 3. 檢查是否低於地面
+    ; 檢查是否低於地面
     mov ax, playerXY.Y
-    cmp ax, groundLevel
-    jle EndPhysics            ; 如果未超過地面，跳過地面處理
+    cmp ax, platformLevel
+	jle EndPhysics            ; 如果未超過地面，跳過地面處理
 
     ; 如果超出地面，重置到地面
-    mov ax, groundLevel
+    mov ax, platformLevel
     mov playerXY.Y, ax        ; 將玩家重置到地面
     mov velocityY, 0          ; 停止垂直運動
-    mov onGround, 1           ; 標記玩家在地面上
+    mov onPlatform, 1           ; 標記玩家在地面上
     jmp EndPhysics
 
 EndPhysics:
     ret
 updatePhysics ENDP
 
+; 檢查平台高度
+checkPlatformLevel PROC uses eax ebx ecx edx
+	mov ax, playerXY.X
+	mov bx, playerXY.Y
+	inc bx
+	mov platformCoord.X, ax
+	mov platformCoord.Y, bx
+
+	mov cx, 30
+detectPlatform:
+	mov dx, cx
+
+	INVOKE ReadConsoleOutputCharacterA,
+	outputHandle,
+	ADDR platformBuffer,
+	1,
+	platformCoord,
+	ADDR charRead
+
+	mov al, platformBuffer
+	.IF al != 32
+		mov ax, platformCoord.Y
+		dec ax
+		mov platformLevel, ax
+		jmp EndCheck
+	.ENDIF
+	inc platformCoord.Y
+	mov cx, dx
+	loop detectPlatform
+
+; 輸出Debug訊息
+;showINFO:
+	;mov dl, 0
+	;mov dh, 0
+	;call gotoxy
+	;call WriteDec
+
+EndCheck:
+	ret
+checkPlatformLevel ENDP
+
 readInput PROC
     ; 檢查W鍵（向上移動）
     INVOKE GetAsyncKeyState, 'W'
     test ax, 8000h
     jz CheckA
-	cmp onGround, 1
+	cmp onPlatform, 1
 	jne CheckA
-	mov ax, 5
+	mov ax, jumpForce
 	sub velocityY, ax
-	mov onGround, 0
+	mov onPlatform, 0
 
 CheckA:
     ; 檢查A鍵（向左移動）
