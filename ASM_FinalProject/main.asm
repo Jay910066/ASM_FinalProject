@@ -539,7 +539,7 @@ generateCoins PROC uses eax ebx ecx edx
 
 Pos1:
 	mov coinCoord.x, 15
-	mov coinCoord.y, 20
+	mov coinCoord.y, 2
 	jmp output
 
 Pos2:
