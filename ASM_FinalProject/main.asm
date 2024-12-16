@@ -33,18 +33,17 @@ elapsedTime DWORD ?
 timeLimit DWORD 600 ; 600 seconds
 TimerXY COORD <0,0>
 
+;畫面繪製
+fileHandle HANDLE ?
+bytesRead DWORD ?
+screenBytesWritten DWORD ?
+
 ;遊戲畫面資料
 gamescrfile BYTE 'gamefield.txt',0
-gamefilehandle HANDLE ?
-gamebytesRead DWORD ?
-gamescrBytesWritten DWORD ?
 
 ;初始畫面資料
 buffer BYTE 5000 DUP(?)
 initialscrfile BYTE 'start.txt',0
-initialfilehandle HANDLE ?
-initialbytesRead DWORD ?
-initialscrBytesWritten DWORD ?
 initialKeyPos Byte 0
 initialconfirm Byte 0
 
@@ -60,9 +59,6 @@ initialExitRightSymbol DWORD '<',0
 
 ;結算畫面資料
 endscrfile BYTE 'finish.txt',0
-endfilehandle HANDLE ?
-endbytesRead DWORD ?
-endscrBytesWritten DWORD ?
 endKeyPos Byte 0
 endconfirm Byte 0
 endCoinGot DWORD 0
@@ -99,6 +95,7 @@ coinGet byte 0
 	SetConsoleOutputCP PROTO STDCALL :DWORD
 	GetAsyncKeyState PROTO STDCALL :DWORD
 	ReadConsoleOutputCharacterA PROTO STDCALL :DWORD, :PTR BYTE, :DWORD, :COORD, :PTR DWORD
+	drawScreen PROTO screenFileName :PTR BYTE
 main PROC
 	INVOKE SetConsoleOutputCP, 437
 
@@ -128,12 +125,12 @@ conti:
 GameLoop:
 	call Clrscr
 	call updatePhysics
-	call displayGamescr
+	INVOKE drawScreen, ADDR gamescrfile
 	call drawPlayer
 	call checkPlatformLevel
 	call displayTime
 	call displayCoinGot
-	call readInput
+	call readPlayerMoveInput
 	call getCoin
 	call generateCoins
 	call endGame
@@ -248,7 +245,7 @@ EndCheck:
 	ret
 checkPlatformLevel ENDP
 
-readInput PROC
+readPlayerMoveInput PROC
     ; 檢查W鍵（向上移動）
     INVOKE GetAsyncKeyState, 'W'
     test ax, 8000h
@@ -282,7 +279,7 @@ CheckESC:
 
 EndInput:
 	ret
-readInput ENDP
+readPlayerMoveInput ENDP
 
 drawPlayer PROC
 	INVOKE WriteConsoleOutputAttribute,
@@ -301,28 +298,28 @@ drawPlayer PROC
 	ret
 drawPlayer ENDP
 
-displayGamescr PROC uses eax ebx ecx edx
+drawScreen PROC uses eax ebx ecx edx, screenFileName:PTR BYTE
     ;打開文字檔案
-	INVOKE CreateFile, ADDR gamescrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
-	mov gamefilehandle, eax
+	INVOKE CreateFile, screenFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
+	mov fileHandle, eax
 
 ReadLoop:
 	;使用UTF-8編碼，顯示符號
 	INVOKE SetConsoleOutputCP, 65001
 
 	;讀取檔案
-	INVOKE ReadFile, gamefilehandle, ADDR buffer, SIZEOF buffer, ADDR gamebytesRead, NULL
+	INVOKE ReadFile, fileHandle, ADDR buffer, SIZEOF buffer, ADDR bytesRead, NULL
 
 	;畫面更新及輸出檔案
 	call Clrscr
-	INVOKE SetFilePointer, gamefilehandle, 0, NULL, FILE_BEGIN
-	INVOKE WriteConsole, outputHandle, ADDR buffer, gamebytesRead, ADDR gamescrBytesWritten, NULL
+	INVOKE SetFilePointer, fileHandle, 0, NULL, FILE_BEGIN
+	INVOKE WriteConsole, outputHandle, ADDR buffer, bytesRead, ADDR screenBytesWritten, NULL
 
-EndDisplay:
+EndDraw:
 	;關閉檔案
-    INVOKE CloseHandle, gamefilehandle
+    INVOKE CloseHandle, fileHandle
     ret
-displayGamescr ENDP
+drawScreen ENDP
 
 displayTime PROC uses eax ebx ecx edx
 	INVOKE GetTickCount
@@ -342,21 +339,7 @@ displayTime PROC uses eax ebx ecx edx
 displayTime ENDP
 
 displayInitialscr PROC uses eax ebx ecx edx
-    ;打開文字檔案
-	INVOKE CreateFile, ADDR initialscrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
-	mov initialfilehandle, eax
-
-ReadLoop:
-	;使用UTF-8編碼，顯示符號
-	INVOKE SetConsoleOutputCP, 65001
-
-	;讀取檔案
-	INVOKE ReadFile, initialfilehandle, ADDR buffer, SIZEOF buffer, ADDR initialbytesRead, NULL
-
-	;畫面更新及輸出檔案
-	call Clrscr
-	INVOKE SetFilePointer, initialfilehandle, 0, NULL, FILE_BEGIN
-	INVOKE WriteConsole, outputHandle, ADDR buffer, initialbytesRead, ADDR initialscrBytesWritten, NULL
+    INVOKE drawScreen, ADDR initialscrfile
 	cmp initialKeyPos, 1
 	je Pos2 
 
@@ -395,8 +378,6 @@ conti:
 	INVOKE Sleep, updateInterval
 
 EndDisplay:
-	;關閉檔案
-    INVOKE CloseHandle, initialfilehandle
     ret
 displayInitialscr ENDP
 
@@ -432,21 +413,7 @@ no_key_pressed:
 readInputInitialscr ENDP
 
 displayEndscr PROC uses eax ebx ecx edx
-    ;打開文字檔案
-	INVOKE CreateFile, ADDR endscrfile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
-	mov endfilehandle, eax
-
-ReadLoop:
-	;使用UTF-8編碼，顯示符號
-	INVOKE SetConsoleOutputCP, 65001
-
-	;讀取檔案
-	INVOKE ReadFile, endfilehandle, ADDR buffer, SIZEOF buffer, ADDR endbytesRead, NULL
-
-	;畫面更新及輸出檔案
-	call Clrscr
-	INVOKE SetFilePointer, endfilehandle, 0, NULL, FILE_BEGIN
-	INVOKE WriteConsole, outputHandle, ADDR buffer, endbytesRead, ADDR endscrBytesWritten, NULL
+    INVOKE drawScreen, ADDR endscrfile
 	cmp endKeyPos, 1
 	je Pos2 
 
@@ -485,8 +452,6 @@ conti:
 	INVOKE Sleep, updateInterval
 
 EndDisplay:
-	;關閉檔案
-    INVOKE CloseHandle, endfilehandle
     ret
 displayEndscr ENDP
 
