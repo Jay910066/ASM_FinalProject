@@ -142,7 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="finish.txt" />
-    <Text Include="gamefield.txt" />
+    <Text Include="gamefield1.txt" />
+    <Text Include="gamefield2.txt" />
+    <Text Include="gamefield3.txt" />
     <Text Include="start.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

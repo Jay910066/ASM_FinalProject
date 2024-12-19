@@ -26,7 +26,13 @@
     <Text Include="finish.txt">
       <Filter>來源檔案</Filter>
     </Text>
-    <Text Include="gamefield.txt">
+    <Text Include="gamefield1.txt">
+      <Filter>來源檔案</Filter>
+    </Text>
+    <Text Include="gamefield2.txt">
+      <Filter>來源檔案</Filter>
+    </Text>
+    <Text Include="gamefield3.txt">
       <Filter>來源檔案</Filter>
     </Text>
   </ItemGroup>
