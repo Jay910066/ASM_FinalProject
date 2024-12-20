@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/19/24 16:20:43
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/20/24 15:42:15
 main.asm						     Page 1 - 1
 
 
@@ -24,7 +24,7 @@ main.asm						     Page 1 - 1
 
  = 00000001			playerSize = 1
  = 00000001			gravity = 1
- = 00000005			jumpForce = 5
+ = 00000004			jumpForce = 4
 
  00000000			.data
  00000000 50			player BYTE 'P'
@@ -40,100 +40,101 @@ main.asm						     Page 1 - 1
  0000001B 00000000		count DWORD 0
  0000001F 000A 0005		playerXY COORD <10,5>
  00000023 0000			velocityY SWORD 0
+ 00000025 00			isRunning BYTE 0
 
- 00000025 0018			platformLevel WORD 24
- 00000027 01			onPlatform BYTE 1
+ 00000026 0018			platformLevel WORD 24
+ 00000028 01			onPlatform BYTE 1
 
- 00000028 00			escConfirm byte 0
+ 00000029 00			escConfirm byte 0
 
- 00000029 00000000		cellsWritten DWORD ?
- 0000002D  00000001 [		playerAttributes WORD playerSize DUP(0bh)
+ 0000002A 00000000		cellsWritten DWORD ?
+ 0000002E  00000001 [		playerAttributes WORD playerSize DUP(0bh)
 	    000B
 	   ]
 
- 0000002F 0032			updateInterval WORD 50 ; 50ms each update
+ 00000030 0032			updateInterval WORD 50 ; 50ms each update
 
- 00000031 00000000		startTime DWORD ?
- 00000035 00000000		elapsedTime DWORD ?
- 00000039 00000258		timeLimit DWORD 600 ; 600 seconds
- 0000003D 0000 0000		TimerXY COORD <0,0>
+ 00000032 00000000		startTime DWORD ?
+ 00000036 00000000		elapsedTime DWORD ?
+ 0000003A 00000258		timeLimit DWORD 600 ; 600 seconds
+ 0000003E 0000 0000		TimerXY COORD <0,0>
 
 				;畫面繪製
- 00000041 00000000		fileHandle HANDLE ?
- 00000045 00000000		bytesRead DWORD ?
- 00000049 00000000		screenBytesWritten DWORD ?
+ 00000042 00000000		fileHandle HANDLE ?
+ 00000046 00000000		bytesRead DWORD ?
+ 0000004A 00000000		screenBytesWritten DWORD ?
 
 				;遊戲畫面資料
- 0000004D 67 61 6D 65 66	gamescrfile BYTE 'gamefield1.txt',0
+ 0000004E 67 61 6D 65 66	gamescrfile BYTE 'gamefield1.txt',0
 	   69 65 6C 64 31
 	   2E 74 78 74 00
 
 				;初始畫面資料
- 0000005C  00001B58 [		buffer BYTE 7000 DUP(?)
+ 0000005D  00001B58 [		buffer BYTE 7000 DUP(?)
 	    00
 	   ]
- 00001BB4 73 74 61 72 74	initialscrfile BYTE 'start.txt',0
+ 00001BB5 73 74 61 72 74	initialscrfile BYTE 'start.txt',0
 	   2E 74 78 74 00
- 00001BBE 00			initialKeyPos Byte 0
- 00001BBF 00			initialconfirm Byte 0
+ 00001BBF 00			initialKeyPos Byte 0
+ 00001BC0 00			initialconfirm Byte 0
 
- 00001BC0 0031 0011		initialStartLeftPos COORD <49,17>
- 00001BC4 0000003E		initialStartLeftSymbol DWORD '>',0
+ 00001BC1 0031 0011		initialStartLeftPos COORD <49,17>
+ 00001BC5 0000003E		initialStartLeftSymbol DWORD '>',0
 	   00000000
- 00001BCC 0049 0011		initialStartRightPos COORD <73,17>
- 00001BD0 0000003C		initialStartRightSymbol DWORD '<',0
+ 00001BCD 0049 0011		initialStartRightPos COORD <73,17>
+ 00001BD1 0000003C		initialStartRightSymbol DWORD '<',0
 	   00000000
 
- 00001BD8 0031 0017		initialExitLeftPos COORD <49,23>
- 00001BDC 0000003E		initialExitLeftSymbol DWORD '>',0
+ 00001BD9 0031 0017		initialExitLeftPos COORD <49,23>
+ 00001BDD 0000003E		initialExitLeftSymbol DWORD '>',0
 	   00000000
- 00001BE4 0049 0017		initialExitRightPos COORD <73,23>
- 00001BE8 0000003C		initialExitRightSymbol DWORD '<',0
+ 00001BE5 0049 0017		initialExitRightPos COORD <73,23>
+ 00001BE9 0000003C		initialExitRightSymbol DWORD '<',0
 	   00000000
 
 				;結算畫面資料
- 00001BF0 66 69 6E 69 73	endscrfile BYTE 'finish.txt',0
+ 00001BF1 66 69 6E 69 73	endscrfile BYTE 'finish.txt',0
 	   68 2E 74 78 74
 	   00
- 00001BFB 00			endKeyPos Byte 0
- 00001BFC 00			endconfirm Byte 0
- 00001BFD 00000000		endCoinGot DWORD 0
- 00001C01 00000000		endTime DWORD 0
- 00001C05 01			needsRefresh BYTE 1
- 00001C06 00			isDead BYTE 0
- 00001C07 00			prevKeyPos BYTE 0
+ 00001BFC 00			endKeyPos Byte 0
+ 00001BFD 00			endconfirm Byte 0
+ 00001BFE 00000000		endCoinGot DWORD 0
+ 00001C02 00000000		endTime DWORD 0
+ 00001C06 01			needsRefresh BYTE 1
+ 00001C07 00			isDead BYTE 0
+ 00001C08 00			prevKeyPos BYTE 0
 
- 00001C08 001E 0014		endStartLeftPos COORD <30,20>
- 00001C0C 0000003E		endStartLeftSymbol DWORD '>',0
+ 00001C09 001E 0014		endStartLeftPos COORD <30,20>
+ 00001C0D 0000003E		endStartLeftSymbol DWORD '>',0
 	   00000000
- 00001C14 0037 0014		endStartRightPos COORD <55,20>
- 00001C18 0000003C		endStartRightSymbol DWORD '<',0
+ 00001C15 0037 0014		endStartRightPos COORD <55,20>
+ 00001C19 0000003C		endStartRightSymbol DWORD '<',0
 	   00000000
 
- 00001C20 0044 0014		endExitLeftPos COORD <68,20>
- 00001C24 0000003E		endExitLeftSymbol DWORD '>',0
+ 00001C21 0044 0014		endExitLeftPos COORD <68,20>
+ 00001C25 0000003E		endExitLeftSymbol DWORD '>',0
 	   00000000
- 00001C2C 005D 0014		endExitRightPos COORD <93,20>
- 00001C30 0000003C		endExitRightSymbol DWORD '<',0
+ 00001C2D 005D 0014		endExitRightPos COORD <93,20>
+ 00001C31 0000003C		endExitRightSymbol DWORD '<',0
 	   00000000
- 00001C38 002B 0007		endCoinGotCoord COORD <43,7>
- 00001C3C 002B 0004		endTimeCoord COORD <43,4>
+ 00001C39 002B 0007		endCoinGotCoord COORD <43,7>
+ 00001C3D 002B 0004		endTimeCoord COORD <43,4>
 
 				;金幣生成資料
- 00001C40 00000001		coinSeed DWORD 1
- 00001C44 0000 0000		coinCoord COORD <0,0>
- 00001C48 00			coinGenerated byte 0
- 00001C49 24			coinSymbol byte '$'
- 00001C4A 000E			coinAttribute WORD 0Eh
- 00001C4C 00000000		coinGot DWORD 0
- 00001C50 2F 35 00		coinOutput1 db "/5",0
- 00001C53 2F 38 00		coinOutput2 db "/8",0
- 00001C56 2F 31 32 00		coinOutput3 db "/12",0
- 00001C5A 0001 0002		coinGotCoord1 COORD <1,2>
- 00001C5E 0003 0002		coinGotCoord2 COORD <3,2>
- 00001C62 00			coinGet byte 0
- 00001C63 00000000		seed DWORD ?
- 00001C67 00000000		preSeed DWORD 0
+ 00001C41 00000001		coinSeed DWORD 1
+ 00001C45 0000 0000		coinCoord COORD <0,0>
+ 00001C49 00			coinGenerated byte 0
+ 00001C4A 24			coinSymbol byte '$'
+ 00001C4B 000E			coinAttribute WORD 0Eh
+ 00001C4D 00000000		coinGot DWORD 0
+ 00001C51 2F 35 00		coinOutput1 db "/5",0
+ 00001C54 2F 38 00		coinOutput2 db "/8",0
+ 00001C57 2F 31 32 00		coinOutput3 db "/12",0
+ 00001C5B 0007 0002		coinGotCoord1 COORD <7,2>
+ 00001C5F 0009 0002		coinGotCoord2 COORD <9,2>
+ 00001C63 00			coinGet byte 0
+ 00001C64 00000000		seed DWORD ?
+ 00001C68 00000000		preSeed DWORD 0
 
  00000000			.code
 					SetConsoleOutputCP PROTO STDCALL :DWORD
@@ -149,16 +150,16 @@ main.asm						     Page 1 - 1
 
  00000016			initialLoop:
  00000016  E8 00000000 E		call Clrscr
- 0000001B  E8 0000036D			call displayInitialscr
- 00000020  E8 00000409			call readInputInitialscr
- 00000025  80 3D 00001BBF R		cmp Initialconfirm, 1
+ 0000001B  E8 000003D4			call displayInitialscr
+ 00000020  E8 00000470			call readInputInitialscr
+ 00000025  80 3D 00001BC0 R		cmp Initialconfirm, 1
 	   01
  0000002C  74 02			je conti
  0000002E  EB E6			jmp initialLoop
 
  00000030			conti:
 					INVOKE GetTickCount
- 00000035  A3 00000031 R		mov startTime, eax
+ 00000035  A3 00000032 R		mov startTime, eax
  0000003A  66| C7 05			mov playerXY.X, 10
 	   0000001F R
 	   000A
@@ -168,60 +169,60 @@ main.asm						     Page 1 - 1
  0000004C  66| C7 05			mov velocityY, 0
 	   00000023 R
 	   0000
- 00000055  C6 05 00001C06 R		mov isDead, 0
+ 00000055  C6 05 00001C07 R		mov isDead, 0
 	   00
- 0000005C  C6 05 00000028 R		mov escConfirm, 0
+ 0000005C  C6 05 00000029 R		mov escConfirm, 0
 	   00
- 00000063  C6 05 00001BFC R		mov endConfirm, 0
+ 00000063  C6 05 00001BFD R		mov endConfirm, 0
 	   00
- 0000006A  C7 05 00001C4C R		mov coinGot, 0
+ 0000006A  C7 05 00001C4D R		mov coinGot, 0
 	   00000000
 					
  00000074			GameLoop:
  00000074  E8 00000000 E		call Clrscr
  00000079  E8 000000BB			call updatePhysics
 					INVOKE drawScreen, ADDR gamescrfile
- 00000088  E8 000001F4			call drawPlayer
+ 00000088  E8 0000025B			call drawPlayer
  0000008D  E8 0000011C			call checkPlatformLevel
- 00000092  E8 000002B7			call displayTime
- 00000097  E8 000005DA			call displayCoinGot
+ 00000092  E8 0000031E			call displayTime
+ 00000097  E8 00000641			call displayCoinGot
  0000009C  E8 0000017B			call readPlayerMoveInput
- 000000A1  E8 00000678			call getCoin
- 000000A6  E8 000004FC			call generateCoins
- 000000AB  E8 000006B2			call endGame
- 000000B0  80 3D 00000028 R		cmp  escConfirm, 1
+ 000000A1  E8 000006DF			call getCoin
+ 000000A6  E8 00000563			call generateCoins
+ 000000AB  E8 00000719			call endGame
+ 000000B0  80 3D 00000029 R		cmp  escConfirm, 1
 	   01
  000000B7  74 11			je endLoop
 					invoke Sleep, updateInterval
  000000C8  EB AA			jmp GameLoop
 
  000000CA			endLoop:
- 000000CA  80 3D 00001C05 R		cmp needsRefresh, 1
+ 000000CA  80 3D 00001C06 R		cmp needsRefresh, 1
 	   01
  000000D1  74 02			je Refresh
  000000D3  EB 18			jmp CheckInput
 
  000000D5			Refresh:
  000000D5  E8 00000000 E		call Clrscr
- 000000DA  E8 000003BB			call displayEndscr
- 000000DF  E8 000005E4			call displayEndData
- 000000E4  C6 05 00001C05 R		mov needsRefresh, 0
+ 000000DA  E8 00000422			call displayEndscr
+ 000000DF  E8 0000064B			call displayEndData
+ 000000E4  C6 05 00001C06 R		mov needsRefresh, 0
 	   00
  000000EB  EB 00			jmp CheckInput
 
  000000ED			CheckInput:
- 000000ED  E8 00000449			call readInputEndscr
- 000000F2  80 3D 00001BFC R		cmp endconfirm, 1
+ 000000ED  E8 000004B0			call readInputEndscr
+ 000000F2  80 3D 00001BFD R		cmp endconfirm, 1
 	   01
  000000F9  0F 84 FFFFFF31		je conti
- 000000FF  A0 00001BFB R		mov al, endKeyPos
- 00000104  8A 25 00001C07 R		mov ah, prevKeyPos
+ 000000FF  A0 00001BFC R		mov al, endKeyPos
+ 00000104  8A 25 00001C08 R		mov ah, prevKeyPos
  0000010A  3A E0			cmp ah, al
  0000010C  74 13			je SkipRefresh
- 0000010E  C6 05 00001C05 R		mov needsRefresh, 1
+ 0000010E  C6 05 00001C06 R		mov needsRefresh, 1
 	   01
- 00000115  8A 25 00001BFB R		mov ah, endKeyPos
- 0000011B  88 25 00001C07 R		mov prevKeyPos, ah
+ 00000115  8A 25 00001BFC R		mov ah, endKeyPos
+ 0000011B  88 25 00001C08 R		mov prevKeyPos, ah
 
  00000121			SkipRefresh:
 					invoke Sleep, updateInterval
@@ -237,13 +238,13 @@ main.asm						     Page 1 - 1
 	   00000021 R
 	   0000
  0000014F  66| C7 05				mov platformLevel, 0
-	   00000025 R
+	   00000026 R
 	   0000
 					.ENDIF
 
 					; 檢查是否掉出螢幕下方
-					.IF playerXY.Y >= 29
- 00000162  C6 05 00001C06 R			mov isDead, 1
+					.IF playerXY.Y >= 26
+ 00000162  C6 05 00001C07 R			mov isDead, 1
 	   01
 					.ENDIF
 				    ; 更新玩家的 Y 座標
@@ -260,18 +261,18 @@ main.asm						     Page 1 - 1
  0000017E  66| A1		    mov ax, playerXY.Y
 	   00000021 R
  00000184  66| 3B 05		    cmp ax, platformLevel
-	   00000025 R
+	   00000026 R
  0000018B  7E 1E			jle EndPhysics            ; 如果未超過地面，跳過地面處理
 
 				    ; 如果超出地面，重置到地面
  0000018D  66| A1		    mov ax, platformLevel
-	   00000025 R
+	   00000026 R
  00000193  66| A3		    mov playerXY.Y, ax        ; 將玩家重置到地面
 	   00000021 R
- 00000199  66| C7 05		    mov velocityY, 0          ; 停止垂直運動
+ 00000199  66| C7 05    mov velocityY, 0          ; 停止垂直運動
 	   00000023 R
 	   0000
- 000001A2  C6 05 00000027 R	    mov onPlatform, 1           ; 標記玩家在地面上
+ 000001A2  C6 05 00000028 R	    mov onPlatform, 1           ; 標記玩家在地面上
 	   01
  000001A9  EB 00		    jmp EndPhysics
 
@@ -308,7 +309,7 @@ main.asm						     Page 1 - 1
 	   0000000D R
  00000201  66| 48				dec ax
  00000203  66| A3				mov platformLevel, ax
-	   00000025 R
+	   00000026 R
  00000209  EB 0C				jmp EndCheck
 					.ENDIF
  0000020B  66| FF 05			inc platformCoord.Y
@@ -331,45 +332,74 @@ main.asm						     Page 1 - 1
 				    ; 檢查W鍵（向上移動）
 				    INVOKE GetAsyncKeyState, 'W'
  00000223  66| A9 8000		    test ax, 8000h
- 00000227  74 1B		    jz CheckA
- 00000229  80 3D 00000027 R		cmp onPlatform, 1
+ 00000227  74 1B		    jz CheckShift
+ 00000229  80 3D 00000028 R		cmp onPlatform, 1
 	   01
- 00000230  75 12			jne CheckA
- 00000232  66| B8 0005			mov ax, jumpForce
+ 00000230  75 12			jne CheckShift
+ 00000232  66| B8 0004			mov ax, jumpForce
  00000236  66| 29 05			sub velocityY, ax
 	   00000023 R
- 0000023D  C6 05 00000027 R		mov onPlatform, 0
+ 0000023D  C6 05 00000028 R		mov onPlatform, 0
 	   00
-
- 00000244			CheckA:
+ 00000244			CheckShift:
+					; 檢查Shift鍵（加速）
+ 00000244  C6 05 00000025 R		mov isRunning, 0
+	   00
+					INVOKE GetAsyncKeyState, VK_SHIFT
+ 00000252  66| A9 8000			test ax, 8000h
+ 00000256  74 07			jz CheckA
+ 00000258  C6 05 00000025 R		mov isRunning, 1
+	   01
+ 0000025F			CheckA:
 				    ; 檢查A鍵（向左移動）
 				    INVOKE GetAsyncKeyState, 'A'
- 0000024B  66| A9 8000		    test ax, 8000h
- 0000024F  74 07		    jz CheckD
- 00000251  66| FF 0D		    dec playerXY.X           ; 玩家X座標減少，向左移動
+ 00000266  66| A9 8000		    test ax, 8000h
+ 0000026A  74 2D		    jz CheckD
+				    .IF isRunning == 1
+ 00000275  66| 83 2D				sub playerXY.X, 2
+	   0000001F R 02
+					.ELSE
+ 0000027F  66| FF 0D				dec playerXY.X
 	   0000001F R
+					.ENDIF
+											
+					.IF playerXY.X <= 0
+ 00000290  66| C7 05				mov playerXY.X, 1
+	   0000001F R
+	   0001
+					.ENDIF
 
- 00000258			CheckD:
+ 00000299			CheckD:
 				    ; 檢查D鍵（向右移動）
 				    INVOKE GetAsyncKeyState, 'D'
- 0000025F  66| A9 8000		    test ax, 8000h
- 00000263  74 07		    jz CheckESC
- 00000265  66| FF 05		    inc playerXY.X           ; 玩家X座標增加，向右移動
+ 000002A0  66| A9 8000		    test ax, 8000h
+ 000002A4  74 2D		    jz CheckESC
+				    .IF isRunning == 1
+ 000002AF  66| 83 05				add playerXY.X, 2
+	   0000001F R 02
+					.ELSE
+ 000002B9  66| FF 05				inc playerXY.X
 	   0000001F R
+					.ENDIF
+					.IF playerXY.X >= 119
+ 000002CA  66| C7 05				mov playerXY.X, 118
+	   0000001F R
+	   0076
+					.ENDIF
 
- 0000026C			CheckESC:
+ 000002D3			CheckESC:
 				    ; 檢查ESC鍵（退出遊戲）
 				    INVOKE GetAsyncKeyState, VK_ESCAPE
- 00000273  66| A9 8000		    test ax, 8000h
- 00000277  74 07		    jz EndInput
- 00000279  C6 05 00000028 R	    mov escConfirm,1
+ 000002DA  66| A9 8000		    test ax, 8000h
+ 000002DE  74 07		    jz EndInput
+ 000002E0  C6 05 00000029 R	    mov escConfirm,1
 	   01
 
- 00000280			EndInput:
- 00000280  C3				ret
- 00000281			readPlayerMoveInput ENDP
+ 000002E7			EndInput:
+ 000002E7  C3				ret
+ 000002E8			readPlayerMoveInput ENDP
 
- 00000281			drawPlayer PROC
+ 000002E8			drawPlayer PROC
 					INVOKE WriteConsoleOutputAttribute,
 					outputHandle, 
 					OFFSET playerAttributes,
@@ -383,15 +413,15 @@ main.asm						     Page 1 - 1
 					playerSize,
 					playerXY,
 					OFFSET count
- 000002BB  C3				ret
- 000002BC			drawPlayer ENDP
+ 00000322  C3				ret
+ 00000323			drawPlayer ENDP
 
- 000002BC			drawScreen PROC uses eax ebx ecx edx, screenFileName:PTR BYTE
+ 00000323			drawScreen PROC uses eax ebx ecx edx, screenFileName:PTR BYTE
 				    ;打開文字檔案
 					INVOKE CreateFile, screenFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
- 000002DD  A3 00000041 R		mov fileHandle, eax
+ 00000344  A3 00000042 R		mov fileHandle, eax
 
- 000002E2			ReadLoop:
+ 00000349			ReadLoop:
 					;使用UTF-8編碼，顯示符號
 					INVOKE SetConsoleOutputCP, 65001
 
@@ -399,40 +429,40 @@ main.asm						     Page 1 - 1
 					INVOKE ReadFile, fileHandle, ADDR buffer, SIZEOF buffer, ADDR bytesRead, NULL
 
 					;畫面更新及輸出檔案
- 00000308  E8 00000000 E		call Clrscr
+ 0000036F  E8 00000000 E		call Clrscr
 					INVOKE SetFilePointer, fileHandle, 0, NULL, FILE_BEGIN
 					INVOKE WriteConsole, outputHandle, ADDR buffer, bytesRead, ADDR screenBytesWritten, NULL
 
- 0000033B			EndDraw:
+ 000003A2			EndDraw:
 					;關閉檔案
 				    INVOKE CloseHandle, fileHandle
 				    ret
- 0000034E			drawScreen ENDP
+ 000003B5			drawScreen ENDP
 
- 0000034E			displayTime PROC uses eax ebx ecx edx
+ 000003B5			displayTime PROC uses eax ebx ecx edx
 					INVOKE GetTickCount
- 00000357  2B 05 00000031 R		sub eax, startTime
- 0000035D  99				cdq
- 0000035E  BB 000003E8			mov ebx, 1000
- 00000363  F7 F3			div ebx
- 00000365  A3 00000035 R		mov elapsedTime, eax
- 0000036A  A1 00000039 R		mov eax, timeLimit
- 0000036F  2B 05 00000035 R		sub eax, elapsedTime
- 00000375  A3 00001C01 R		mov endTime, eax
- 0000037A  B2 01			mov dl, 1
- 0000037C  B6 01			mov dh, 1
- 0000037E  E8 00000000 E		call gotoxy
- 00000383  E8 00000000 E		call WriteDec
+ 000003BE  2B 05 00000032 R		sub eax, startTime
+ 000003C4  99				cdq
+ 000003C5  BB 000003E8			mov ebx, 1000
+ 000003CA  F7 F3			div ebx
+ 000003CC  A3 00000036 R		mov elapsedTime, eax
+ 000003D1  A1 0000003A R		mov eax, timeLimit
+ 000003D6  2B 05 00000036 R		sub eax, elapsedTime
+ 000003DC  A3 00001C02 R		mov endTime, eax
+ 000003E1  B2 06			mov dl, 6
+ 000003E3  B6 01			mov dh, 1
+ 000003E5  E8 00000000 E		call gotoxy
+ 000003EA  E8 00000000 E		call WriteDec
 					ret
- 0000038D			displayTime ENDP
+ 000003F4			displayTime ENDP
 
- 0000038D			displayInitialscr PROC uses eax ebx ecx edx
+ 000003F4			displayInitialscr PROC uses eax ebx ecx edx
 				    INVOKE drawScreen, ADDR initialscrfile
- 0000039B  80 3D 00001BBE R		cmp initialKeyPos, 1
+ 00000402  80 3D 00001BBF R		cmp initialKeyPos, 1
 	   01
- 000003A2  74 3C			je Pos2 
+ 00000409  74 3C			je Pos2 
 
- 000003A4			Pos1:
+ 0000040B			Pos1:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET initialStartLeftSymbol,
@@ -446,9 +476,9 @@ main.asm						     Page 1 - 1
 					1, 
 					initialStartRightPos,
 					OFFSET count
- 000003DE  EB 3A			jmp conti
+ 00000445  EB 3A			jmp conti
 
- 000003E0			Pos2:
+ 00000447			Pos2:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET initialExitLeftSymbol,
@@ -463,55 +493,55 @@ main.asm						     Page 1 - 1
 					initialExitRightPos,
 					OFFSET count
 
- 0000041A			conti:
+ 00000481			conti:
 					INVOKE Sleep, updateInterval
 
- 00000429			EndDisplay:
+ 00000490			EndDisplay:
 				    ret
- 0000042E			displayInitialscr ENDP
+ 00000495			displayInitialscr ENDP
 
- 0000042E			readInputInitialscr PROC uses eax ebx ecx edx
+ 00000495			readInputInitialscr PROC uses eax ebx ecx edx
 					INVOKE GetAsyncKeyState, VK_RETURN
- 00000439  A9 00008000			test eax, 8000h                     
- 0000043E  74 21		    jz checkW
- 00000440  80 3D 00001BBE R		cmp initialKeyPos, 0 ;判斷按鍵位置
+ 000004A0  A9 00008000			test eax, 8000h                     
+ 000004A5  74 21		    jz checkW
+ 000004A7  80 3D 00001BBF R		cmp initialKeyPos, 0 ;判斷按鍵位置
 	   00
- 00000447  74 0C			je confirm
- 00000449  E8 00000000 E		call Clrscr
+ 000004AE  74 0C			je confirm
+ 000004B0  E8 00000000 E		call Clrscr
 					INVOKE ExitProcess, 0
 
- 00000455			confirm:
- 00000455  C6 05 00001BBF R		mov initialconfirm, 1
+ 000004BC			confirm:
+ 000004BC  C6 05 00001BC0 R		mov initialconfirm, 1
 	   01
 					ret
 
- 00000461			checkW:
+ 000004C8			checkW:
 					INVOKE GetAsyncKeyState, 'W'
- 00000468  A9 00008000			test eax, 8000h                     
- 0000046D  74 0C		    jz checkS
- 0000046F  C6 05 00001BBE R		mov initialKeyPos, 0
+ 000004CF  A9 00008000			test eax, 8000h                     
+ 000004D4  74 0C		    jz checkS
+ 000004D6  C6 05 00001BBF R		mov initialKeyPos, 0
 	   00
 					ret
 
- 0000047B			checkS:
+ 000004E2			checkS:
 					INVOKE GetAsyncKeyState, 'S'
- 00000482  A9 00008000			test eax, 8000h                     
- 00000487  74 0C		    jz no_key_pressed
- 00000489  C6 05 00001BBE R		mov initialKeyPos, 1
+ 000004E9  A9 00008000			test eax, 8000h                     
+ 000004EE  74 0C		    jz no_key_pressed
+ 000004F0  C6 05 00001BBF R		mov initialKeyPos, 1
 	   01
 					ret
 
- 00000495			no_key_pressed:
+ 000004FC			no_key_pressed:
 					ret
- 0000049A			readInputInitialscr ENDP
+ 00000501			readInputInitialscr ENDP
 
- 0000049A			displayEndscr PROC uses eax ebx ecx edx
+ 00000501			displayEndscr PROC uses eax ebx ecx edx
 				    INVOKE drawScreen, ADDR endscrfile
- 000004A8  80 3D 00001BFB R		cmp endKeyPos, 1
+ 0000050F  80 3D 00001BFC R		cmp endKeyPos, 1
 	   01
- 000004AF  74 3C			je Pos2 
+ 00000516  74 3C			je Pos2 
 
- 000004B1			Pos1:
+ 00000518			Pos1:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET endStartLeftSymbol,
@@ -525,9 +555,9 @@ main.asm						     Page 1 - 1
 					1, 
 					endStartRightPos,
 					OFFSET count
- 000004EB  EB 3A			jmp conti
+ 00000552  EB 3A			jmp conti
 
- 000004ED			Pos2:
+ 00000554			Pos2:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET endExitLeftSymbol,
@@ -542,103 +572,103 @@ main.asm						     Page 1 - 1
 					endExitRightPos,
 					OFFSET count
 
- 00000527			conti:
+ 0000058E			conti:
 					INVOKE Sleep, updateInterval
 
- 00000536			EndDisplay:
+ 0000059D			EndDisplay:
 				    ret
- 0000053B			displayEndscr ENDP
+ 000005A2			displayEndscr ENDP
 
- 0000053B			readInputEndscr PROC uses eax ebx ecx edx
+ 000005A2			readInputEndscr PROC uses eax ebx ecx edx
 					INVOKE GetAsyncKeyState, VK_RETURN
- 00000546  A9 00008000			test eax, 8000h                     
- 0000054B  74 21		    jz checkA
- 0000054D  80 3D 00001BFB R		cmp endKeyPos, 0 ;判斷按鍵位置
+ 000005AD  A9 00008000			test eax, 8000h                     
+ 000005B2  74 21		    jz checkA
+ 000005B4  80 3D 00001BFC R		cmp endKeyPos, 0 ;判斷按鍵位置
 	   00
- 00000554  74 0C			je confirm
- 00000556  E8 00000000 E		call Clrscr
+ 000005BB  74 0C			je confirm
+ 000005BD  E8 00000000 E		call Clrscr
 					INVOKE ExitProcess, 0
 
- 00000562			confirm:
- 00000562  C6 05 00001BFC R		mov endconfirm, 1
+ 000005C9			confirm:
+ 000005C9  C6 05 00001BFD R		mov endconfirm, 1
 	   01
 					ret
 
- 0000056E			checkA:
+ 000005D5			checkA:
 					INVOKE GetAsyncKeyState, 'A'
- 00000575  A9 00008000			test eax, 8000h                     
- 0000057A  74 0C		    jz checkD
- 0000057C  C6 05 00001BFB R		mov endKeyPos, 0
+ 000005DC  A9 00008000			test eax, 8000h                     
+ 000005E1  74 0C		    jz checkD
+ 000005E3  C6 05 00001BFC R		mov endKeyPos, 0
 	   00
 					ret
 
- 00000588			checkD:
+ 000005EF			checkD:
 					INVOKE GetAsyncKeyState, 'D'
- 0000058F  A9 00008000			test eax, 8000h                     
- 00000594  74 0C		    jz no_key_pressed
- 00000596  C6 05 00001BFB R		mov endKeyPos, 1
+ 000005F6  A9 00008000			test eax, 8000h                     
+ 000005FB  74 0C		    jz no_key_pressed
+ 000005FD  C6 05 00001BFC R		mov endKeyPos, 1
 	   01
 					ret
 
- 000005A2			no_key_pressed:
+ 00000609			no_key_pressed:
 					ret
- 000005A7			readInputEndscr ENDP
+ 0000060E			readInputEndscr ENDP
 
- 000005A7			generateCoins PROC uses eax ebx ecx edx
- 000005AB  80 3D 00001C48 R		cmp coinGenerated, 1
+ 0000060E			generateCoins PROC uses eax ebx ecx edx
+ 00000612  80 3D 00001C49 R		cmp coinGenerated, 1
 	   01
- 000005B2  74 7C			je output
- 000005B4  E8 000001D8			call generateRandomSeed
- 000005B9  83 3D 00001C40 R		cmp coinSeed, 0
+ 00000619  74 7C			je output
+ 0000061B  E8 000001D8			call generateRandomSeed
+ 00000620  83 3D 00001C41 R		cmp coinSeed, 0
 	   00
- 000005C0  74 14			je Pos1
- 000005C2  83 3D 00001C40 R		cmp coinSeed, 1
+ 00000627  74 14			je Pos1
+ 00000629  83 3D 00001C41 R		cmp coinSeed, 1
 	   01
- 000005C9  74 1F			je Pos2
- 000005CB  83 3D 00001C40 R		cmp coinSeed, 2
+ 00000630  74 1F			je Pos2
+ 00000632  83 3D 00001C41 R		cmp coinSeed, 2
 	   02
- 000005D2  74 2A			je Pos3
- 000005D4  EB 3C			jmp Pos4
+ 00000639  74 2A			je Pos3
+ 0000063B  EB 3C			jmp Pos4
 
- 000005D6			Pos1:
- 000005D6  66| C7 05			mov coinCoord.x, 15
-	   00001C44 R
+ 0000063D			Pos1:
+ 0000063D  66| C7 05			mov coinCoord.x, 15
+	   00001C45 R
 	   000F
- 000005DF  66| C7 05			mov coinCoord.y, 3
-	   00001C46 R
+ 00000646  66| C7 05			mov coinCoord.y, 3
+	   00001C47 R
 	   0003
- 000005E8  EB 46			jmp output
+ 0000064F  EB 46			jmp output
 
- 000005EA			Pos2:
- 000005EA  66| C7 05			mov coinCoord.x, 90
-	   00001C44 R
+ 00000651			Pos2:
+ 00000651  66| C7 05			mov coinCoord.x, 90
+	   00001C45 R
 	   005A
- 000005F3  66| C7 05			mov coinCoord.y, 4
-	   00001C46 R
+ 0000065A  66| C7 05			mov coinCoord.y, 4
+	   00001C47 R
 	   0004
- 000005FC  EB 32			jmp output
+ 00000663  EB 32			jmp output
 
- 000005FE			Pos3:
- 000005FE  66| C7 05			mov coinCoord.x, 40
-	   00001C44 R
+ 00000665			Pos3:
+ 00000665  66| C7 05			mov coinCoord.x, 40
+	   00001C45 R
 	   0028
- 00000607  66| C7 05			mov coinCoord.y, 14
-	   00001C46 R
+ 0000066E  66| C7 05			mov coinCoord.y, 14
+	   00001C47 R
 	   000E
- 00000610  EB 1E			jmp output
+ 00000677  EB 1E			jmp output
 
- 00000612			Pos4:
- 00000612  66| C7 05			mov coinCoord.x, 98
-	   00001C44 R
+ 00000679			Pos4:
+ 00000679  66| C7 05			mov coinCoord.x, 98
+	   00001C45 R
 	   0062
- 0000061B  66| C7 05			mov coinCoord.y, 15
-	   00001C46 R
+ 00000682  66| C7 05			mov coinCoord.y, 15
+	   00001C47 R
 	   000F
- 00000624  C7 05 00001C40 R		mov coinSeed, 0
+ 0000068B  C7 05 00001C41 R		mov coinSeed, 0
 	   00000000
- 0000062E  EB 00			jmp output
+ 00000695  EB 00			jmp output
 
- 00000630			output:
+ 00000697			output:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle,
 					OFFSET coinSymbol,
@@ -653,128 +683,128 @@ main.asm						     Page 1 - 1
 					coinCoord,
 					OFFSET count
 
- 0000066A  C6 05 00001C48 R		mov coinGenerated, 1
+ 000006D1  C6 05 00001C49 R		mov coinGenerated, 1
 	   01
 					ret
- 00000676			generateCoins ENDP
+ 000006DD			generateCoins ENDP
 
- 00000676			displayCoinGot PROC uses eax ebx ecx edx
+ 000006DD			displayCoinGot PROC uses eax ebx ecx edx
 				    invoke SetConsoleCursorPosition,outputHandle, coinGotCoord1
- 0000068B  A1 00001C4C R		mov eax, coinGot
- 00000690  E8 00000000 E		call WriteDec
+ 000006F2  A1 00001C4D R		mov eax, coinGot
+ 000006F7  E8 00000000 E		call WriteDec
 					invoke SetConsoleCursorPosition, outputHandle, coinGotCoord2
- 000006A6  B9 00000003			mov ecx, 3
+ 0000070D  B9 00000003			mov ecx, 3
 					invoke WriteFile, outputHandle, ADDR coinOutput1, ecx, addr bytesWritten, NULL
 					ret
- 000006C8			displayCoinGot ENDP
+ 0000072F			displayCoinGot ENDP
 
- 000006C8			displayEndData PROC uses eax ebx ecx edx
- 000006CC			coin:
- 000006CC  B2 2B			mov dl, 43
- 000006CE  B6 07			mov dh, 7
- 000006D0  E8 00000000 E		call gotoxy
- 000006D5  A1 00001C4C R		mov eax, CoinGot
- 000006DA  E8 00000000 E		call WriteDec
+ 0000072F			displayEndData PROC uses eax ebx ecx edx
+ 00000733			coin:
+ 00000733  B2 2B			mov dl, 43
+ 00000735  B6 07			mov dh, 7
+ 00000737  E8 00000000 E		call gotoxy
+ 0000073C  A1 00001C4D R		mov eax, CoinGot
+ 00000741  E8 00000000 E		call WriteDec
 
- 000006DF			time:
- 000006DF  B2 2B			mov dl, 43
- 000006E1  B6 04			mov dh, 4
- 000006E3  E8 00000000 E		call gotoxy
- 000006E8  A1 00001C01 R		mov eax, endTime
- 000006ED  E8 00000000 E		call WriteDec
+ 00000746			time:
+ 00000746  B2 2B			mov dl, 43
+ 00000748  B6 04			mov dh, 4
+ 0000074A  E8 00000000 E		call gotoxy
+ 0000074F  A1 00001C02 R		mov eax, endTime
+ 00000754  E8 00000000 E		call WriteDec
 
- 000006F2			point:
- 000006F2  B2 2B			mov dl, 43
- 000006F4  B6 0A			mov dh, 10
- 000006F6  E8 00000000 E		call gotoxy
- 000006FB  A1 00001C4C R		mov eax, CoinGot
- 00000700  F7 25 00001C01 R		mul endTime
+ 00000759			point:
+ 00000759  B2 2B			mov dl, 43
+ 0000075B  B6 0A			mov dh, 10
+ 0000075D  E8 00000000 E		call gotoxy
+ 00000762  A1 00001C4D R		mov eax, CoinGot
+ 00000767  F7 25 00001C02 R		mul endTime
 					.IF isDead == 1
- 0000070F  B8 00000000				mov eax, 0
+ 00000776  B8 00000000				mov eax, 0
 					.ENDIF
- 00000714  E8 00000000 E		call WriteDec
+ 0000077B  E8 00000000 E		call WriteDec
 
 					ret
- 0000071E			displayEndData ENDP
+ 00000785			displayEndData ENDP
 
- 0000071E			getCoin PROC uses eax ebx ecx edx
- 00000722			compareX:
- 00000722  66| A1			mov ax, playerXY.x
+ 00000785			getCoin PROC uses eax ebx ecx edx
+ 00000789			compareX:
+ 00000789  66| A1			mov ax, playerXY.x
 	   0000001F R
- 00000728  66| 3B 05			cmp ax, coinCoord.x
-	   00001C44 R
- 0000072F  75 25			jne not_equal
+ 0000078F  66| 3B 05			cmp ax, coinCoord.x
+	   00001C45 R
+ 00000796  75 25			jne not_equal
 
- 00000731			compareY:
- 00000731  66| A1			mov ax, playerXY.y
+ 00000798			compareY:
+ 00000798  66| A1			mov ax, playerXY.y
 	   00000021 R
- 00000737  66| 3B 05			cmp ax, coinCoord.y
-	   00001C46 R
- 0000073E  75 16			jne not_equal
+ 0000079E  66| 3B 05			cmp ax, coinCoord.y
+	   00001C47 R
+ 000007A5  75 16			jne not_equal
 
- 00000740			equal:
- 00000740  C6 05 00001C62 R		mov coinGet, 1
+ 000007A7			equal:
+ 000007A7  C6 05 00001C63 R		mov coinGet, 1
 	   01
- 00000747  FF 05 00001C4C R		inc coinGot
- 0000074D  C6 05 00001C48 R		mov coinGenerated, 0
+ 000007AE  FF 05 00001C4D R		inc coinGot
+ 000007B4  C6 05 00001C49 R		mov coinGenerated, 0
 	   00
- 00000754  EB 07			jmp end_program
+ 000007BB  EB 07			jmp end_program
 
- 00000756			not_equal:
- 00000756  C6 05 00001C62 R		mov coinGet, 0
+ 000007BD			not_equal:
+ 000007BD  C6 05 00001C63 R		mov coinGet, 0
 	   00
 
- 0000075D			end_program:
+ 000007C4			end_program:
 					ret
 
- 00000762			getCoin ENDP
+ 000007C9			getCoin ENDP
 
- 00000762			endGame PROC uses eax ebx ecx edx
- 00000766  A1 00001C4C R		mov eax, coinGot
- 0000076B  83 F8 05			cmp eax, 5
- 0000076E  74 15			je equal
+ 000007C9			endGame PROC uses eax ebx ecx edx
+ 000007CD  A1 00001C4D R		mov eax, coinGot
+ 000007D2  83 F8 05			cmp eax, 5
+ 000007D5  74 15			je equal
 
- 00000770  A1 00001C01 R		mov eax, endTime
- 00000775  83 F8 00			cmp eax, 0
- 00000778  74 0B			je equal
+ 000007D7  A1 00001C02 R		mov eax, endTime
+ 000007DC  83 F8 00			cmp eax, 0
+ 000007DF  74 0B			je equal
 
- 0000077A  A0 00001C06 R		mov al, isDead
- 0000077F  3C 01			cmp al, 1
- 00000781  74 02			je equal
- 00000783  EB 07			jmp end_program
+ 000007E1  A0 00001C07 R		mov al, isDead
+ 000007E6  3C 01			cmp al, 1
+ 000007E8  74 02			je equal
+ 000007EA  EB 07			jmp end_program
 
- 00000785			equal:
- 00000785  C6 05 00000028 R		mov escConfirm, 1
+ 000007EC			equal:
+ 000007EC  C6 05 00000029 R		mov escConfirm, 1
 	   01
 
- 0000078C			end_program:
+ 000007F3			end_program:
 					ret
- 00000791			endGame ENDP
+ 000007F8			endGame ENDP
 
- 00000791			generateRandomSeed PROC uses eax ebx ecx edx
- 00000795			generate:
+ 000007F8			generateRandomSeed PROC uses eax ebx ecx edx
+ 000007FC			generate:
 					invoke GetTickCount
- 0000079A  A3 00001C63 R	    mov seed, eax
+ 00000801  A3 00001C64 R	    mov seed, eax
 
- 0000079F  A1 00001C63 R		mov eax, seed
- 000007A4  69 C0 000343FD	    imul eax, 214013    
- 000007AA  05 00269EC3		    add eax, 2531011
- 000007AF  C1 E8 10		    shr eax, 16    
- 000007B2  25 00007FFF		    and eax, 7FFFh
- 000007B7  33 D2		    xor edx, edx
- 000007B9  BB 00000005			mov ebx, 5
- 000007BE  F7 F3		    div ebx    
- 000007C0  89 15 00001C40 R	    mov coinSeed, edx
+ 00000806  A1 00001C64 R		mov eax, seed
+ 0000080B  69 C0 000343FD	    imul eax, 214013    
+ 00000811  05 00269EC3		    add eax, 2531011
+ 00000816  C1 E8 10		    shr eax, 16    
+ 00000819  25 00007FFF		    and eax, 7FFFh
+ 0000081E  33 D2		    xor edx, edx
+ 00000820  BB 00000005			mov ebx, 5
+ 00000825  F7 F3		    div ebx    
+ 00000827  89 15 00001C41 R	    mov coinSeed, edx
 
- 000007C6  3B 15 00001C67 R		cmp edx, preSeed
- 000007CC  74 C7			je generate
- 000007CE  89 15 00001C67 R		mov preSeed,edx
+ 0000082D  3B 15 00001C68 R		cmp edx, preSeed
+ 00000833  74 C7			je generate
+ 00000835  89 15 00001C68 R		mov preSeed,edx
 					
 					ret
- 000007D9			generateRandomSeed ENDP
+ 00000840			generateRandomSeed ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/19/24 16:20:43
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/20/24 15:42:15
 main.asm						     Symbols 2 - 1
 
 
@@ -868,8 +898,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00001C6B Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 000007D9 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00001C6C Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000840 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -932,6 +962,7 @@ ReadChar . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ReadConsoleA . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadConsoleOutputCharacterA  . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleOutputCharacter . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadDec  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadFloat  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -982,44 +1013,44 @@ WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 checkPlatformLevel . . . . . . .	P Near	 000001AE _TEXT	Length= 0000006E Public STDCALL
   detectPlatform . . . . . . . .	L Near	 000001D2 _TEXT	
   EndCheck . . . . . . . . . . .	L Near	 00000217 _TEXT	
-displayCoinGot . . . . . . . . .	P Near	 00000676 _TEXT	Length= 00000052 Public STDCALL
-displayEndData . . . . . . . . .	P Near	 000006C8 _TEXT	Length= 00000056 Public STDCALL
-  coin . . . . . . . . . . . . .	L Near	 000006CC _TEXT	
-  time . . . . . . . . . . . . .	L Near	 000006DF _TEXT	
-  point  . . . . . . . . . . . .	L Near	 000006F2 _TEXT	
-displayEndscr  . . . . . . . . .	P Near	 0000049A _TEXT	Length= 000000A1 Public STDCALL
-  Pos1 . . . . . . . . . . . . .	L Near	 000004B1 _TEXT	
-  Pos2 . . . . . . . . . . . . .	L Near	 000004ED _TEXT	
-  conti  . . . . . . . . . . . .	L Near	 00000527 _TEXT	
-  EndDisplay . . . . . . . . . .	L Near	 00000536 _TEXT	
-displayInitialscr  . . . . . . .	P Near	 0000038D _TEXT	Length= 000000A1 Public STDCALL
-  Pos1 . . . . . . . . . . . . .	L Near	 000003A4 _TEXT	
-  Pos2 . . . . . . . . . . . . .	L Near	 000003E0 _TEXT	
-  conti  . . . . . . . . . . . .	L Near	 0000041A _TEXT	
-  EndDisplay . . . . . . . . . .	L Near	 00000429 _TEXT	
-displayTime  . . . . . . . . . .	P Near	 0000034E _TEXT	Length= 0000003F Public STDCALL
-drawPlayer . . . . . . . . . . .	P Near	 00000281 _TEXT	Length= 0000003B Public STDCALL
-drawScreen . . . . . . . . . . .	P Near	 000002BC _TEXT	Length= 00000092 Public STDCALL
+displayCoinGot . . . . . . . . .	P Near	 000006DD _TEXT	Length= 00000052 Public STDCALL
+displayEndData . . . . . . . . .	P Near	 0000072F _TEXT	Length= 00000056 Public STDCALL
+  coin . . . . . . . . . . . . .	L Near	 00000733 _TEXT	
+  time . . . . . . . . . . . . .	L Near	 00000746 _TEXT	
+  point  . . . . . . . . . . . .	L Near	 00000759 _TEXT	
+displayEndscr  . . . . . . . . .	P Near	 00000501 _TEXT	Length= 000000A1 Public STDCALL
+  Pos1 . . . . . . . . . . . . .	L Near	 00000518 _TEXT	
+  Pos2 . . . . . . . . . . . . .	L Near	 00000554 _TEXT	
+  conti  . . . . . . . . . . . .	L Near	 0000058E _TEXT	
+  EndDisplay . . . . . . . . . .	L Near	 0000059D _TEXT	
+displayInitialscr  . . . . . . .	P Near	 000003F4 _TEXT	Length= 000000A1 Public STDCALL
+  Pos1 . . . . . . . . . . . . .	L Near	 0000040B _TEXT	
+  Pos2 . . . . . . . . . . . . .	L Near	 00000447 _TEXT	
+  conti  . . . . . . . . . . . .	L Near	 00000481 _TEXT	
+  EndDisplay . . . . . . . . . .	L Near	 00000490 _TEXT	
+displayTime  . . . . . . . . . .	P Near	 000003B5 _TEXT	Length= 0000003F Public STDCALL
+drawPlayer . . . . . . . . . . .	P Near	 000002E8 _TEXT	Length= 0000003B Public STDCALL
+drawScreen . . . . . . . . . . .	P Near	 00000323 _TEXT	Length= 00000092 Public STDCALL
   screenFileName . . . . . . . .	DWord	 bp + 00000008
-  ReadLoop . . . . . . . . . . .	L Near	 000002E2 _TEXT	
-  EndDraw  . . . . . . . . . . .	L Near	 0000033B _TEXT	
-endGame  . . . . . . . . . . . .	P Near	 00000762 _TEXT	Length= 0000002F Public STDCALL
-  equal  . . . . . . . . . . . .	L Near	 00000785 _TEXT	
-  end_program  . . . . . . . . .	L Near	 0000078C _TEXT	
-generateCoins  . . . . . . . . .	P Near	 000005A7 _TEXT	Length= 000000CF Public STDCALL
-  Pos1 . . . . . . . . . . . . .	L Near	 000005D6 _TEXT	
-  Pos2 . . . . . . . . . . . . .	L Near	 000005EA _TEXT	
-  Pos3 . . . . . . . . . . . . .	L Near	 000005FE _TEXT	
-  Pos4 . . . . . . . . . . . . .	L Near	 00000612 _TEXT	
-  output . . . . . . . . . . . .	L Near	 00000630 _TEXT	
-generateRandomSeed . . . . . . .	P Near	 00000791 _TEXT	Length= 00000048 Public STDCALL
-  generate . . . . . . . . . . .	L Near	 00000795 _TEXT	
-getCoin  . . . . . . . . . . . .	P Near	 0000071E _TEXT	Length= 00000044 Public STDCALL
-  compareX . . . . . . . . . . .	L Near	 00000722 _TEXT	
-  compareY . . . . . . . . . . .	L Near	 00000731 _TEXT	
-  equal  . . . . . . . . . . . .	L Near	 00000740 _TEXT	
-  not_equal  . . . . . . . . . .	L Near	 00000756 _TEXT	
-  end_program  . . . . . . . . .	L Near	 0000075D _TEXT	
+  ReadLoop . . . . . . . . . . .	L Near	 00000349 _TEXT	
+  EndDraw  . . . . . . . . . . .	L Near	 000003A2 _TEXT	
+endGame  . . . . . . . . . . . .	P Near	 000007C9 _TEXT	Length= 0000002F Public STDCALL
+  equal  . . . . . . . . . . . .	L Near	 000007EC _TEXT	
+  end_program  . . . . . . . . .	L Near	 000007F3 _TEXT	
+generateCoins  . . . . . . . . .	P Near	 0000060E _TEXT	Length= 000000CF Public STDCALL
+  Pos1 . . . . . . . . . . . . .	L Near	 0000063D _TEXT	
+  Pos2 . . . . . . . . . . . . .	L Near	 00000651 _TEXT	
+  Pos3 . . . . . . . . . . . . .	L Near	 00000665 _TEXT	
+  Pos4 . . . . . . . . . . . . .	L Near	 00000679 _TEXT	
+  output . . . . . . . . . . . .	L Near	 00000697 _TEXT	
+generateRandomSeed . . . . . . .	P Near	 000007F8 _TEXT	Length= 00000048 Public STDCALL
+  generate . . . . . . . . . . .	L Near	 000007FC _TEXT	
+getCoin  . . . . . . . . . . . .	P Near	 00000785 _TEXT	Length= 00000044 Public STDCALL
+  compareX . . . . . . . . . . .	L Near	 00000789 _TEXT	
+  compareY . . . . . . . . . . .	L Near	 00000798 _TEXT	
+  equal  . . . . . . . . . . . .	L Near	 000007A7 _TEXT	
+  not_equal  . . . . . . . . . .	L Near	 000007BD _TEXT	
+  end_program  . . . . . . . . .	L Near	 000007C4 _TEXT	
 main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000139 Public STDCALL
   initialLoop  . . . . . . . . .	L Near	 00000016 _TEXT	
   conti  . . . . . . . . . . . .	L Near	 00000030 _TEXT	
@@ -1029,21 +1060,22 @@ main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000139 Public 
   CheckInput . . . . . . . . . .	L Near	 000000ED _TEXT	
   SkipRefresh  . . . . . . . . .	L Near	 00000121 _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
-readInputEndscr  . . . . . . . .	P Near	 0000053B _TEXT	Length= 0000006C Public STDCALL
-  confirm  . . . . . . . . . . .	L Near	 00000562 _TEXT	
-  checkA . . . . . . . . . . . .	L Near	 0000056E _TEXT	
-  checkD . . . . . . . . . . . .	L Near	 00000588 _TEXT	
-  no_key_pressed . . . . . . . .	L Near	 000005A2 _TEXT	
-readInputInitialscr  . . . . . .	P Near	 0000042E _TEXT	Length= 0000006C Public STDCALL
-  confirm  . . . . . . . . . . .	L Near	 00000455 _TEXT	
-  checkW . . . . . . . . . . . .	L Near	 00000461 _TEXT	
-  checkS . . . . . . . . . . . .	L Near	 0000047B _TEXT	
-  no_key_pressed . . . . . . . .	L Near	 00000495 _TEXT	
-readPlayerMoveInput  . . . . . .	P Near	 0000021C _TEXT	Length= 00000065 Public STDCALL
-  CheckA . . . . . . . . . . . .	L Near	 00000244 _TEXT	
-  CheckD . . . . . . . . . . . .	L Near	 00000258 _TEXT	
-  CheckESC . . . . . . . . . . .	L Near	 0000026C _TEXT	
-  EndInput . . . . . . . . . . .	L Near	 00000280 _TEXT	
+readInputEndscr  . . . . . . . .	P Near	 000005A2 _TEXT	Length= 0000006C Public STDCALL
+  confirm  . . . . . . . . . . .	L Near	 000005C9 _TEXT	
+  checkA . . . . . . . . . . . .	L Near	 000005D5 _TEXT	
+  checkD . . . . . . . . . . . .	L Near	 000005EF _TEXT	
+  no_key_pressed . . . . . . . .	L Near	 00000609 _TEXT	
+readInputInitialscr  . . . . . .	P Near	 00000495 _TEXT	Length= 0000006C Public STDCALL
+  confirm  . . . . . . . . . . .	L Near	 000004BC _TEXT	
+  checkW . . . . . . . . . . . .	L Near	 000004C8 _TEXT	
+  checkS . . . . . . . . . . . .	L Near	 000004E2 _TEXT	
+  no_key_pressed . . . . . . . .	L Near	 000004FC _TEXT	
+readPlayerMoveInput  . . . . . .	P Near	 0000021C _TEXT	Length= 000000CC Public STDCALL
+  CheckShift . . . . . . . . . .	L Near	 00000244 _TEXT	
+  CheckA . . . . . . . . . . . .	L Near	 0000025F _TEXT	
+  CheckD . . . . . . . . . . . .	L Near	 00000299 _TEXT	
+  CheckESC . . . . . . . . . . .	L Near	 000002D3 _TEXT	
+  EndInput . . . . . . . . . . .	L Near	 000002E7 _TEXT	
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 updatePhysics  . . . . . . . . .	P Near	 00000139 _TEXT	Length= 00000075 Public STDCALL
   EndPhysics . . . . . . . . . .	L Near	 000001AB _TEXT	
@@ -1182,7 +1214,7 @@ SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
 TAB  . . . . . . . . . . . . . .	Number	 00000009h   
 TRUE . . . . . . . . . . . . . .	Number	 00000001h   
 TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
-TimerXY  . . . . . . . . . . . .	COORD	 0000003D _DATA	
+TimerXY  . . . . . . . . . . . .	COORD	 0000003E _DATA	
 VK_11  . . . . . . . . . . . . .	Number	 000000BDh   
 VK_12  . . . . . . . . . . . . .	Number	 000000BBh   
 VK_ADD . . . . . . . . . . . . .	Number	 0000006Bh   
@@ -1267,61 +1299,62 @@ WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
-buffer . . . . . . . . . . . . .	Byte	 0000005C _DATA	
-bytesRead  . . . . . . . . . . .	DWord	 00000045 _DATA	
+buffer . . . . . . . . . . . . .	Byte	 0000005D _DATA	
+bytesRead  . . . . . . . . . . .	DWord	 00000046 _DATA	
 bytesWritten . . . . . . . . . .	DWord	 00000017 _DATA	
-cellsWritten . . . . . . . . . .	DWord	 00000029 _DATA	
+cellsWritten . . . . . . . . . .	DWord	 0000002A _DATA	
 charRead . . . . . . . . . . . .	DWord	 0000000F _DATA	
-coinAttribute  . . . . . . . . .	Word	 00001C4A _DATA	
-coinCoord  . . . . . . . . . . .	COORD	 00001C44 _DATA	
-coinGenerated  . . . . . . . . .	Byte	 00001C48 _DATA	
-coinGet  . . . . . . . . . . . .	Byte	 00001C62 _DATA	
-coinGotCoord1  . . . . . . . . .	COORD	 00001C5A _DATA	
-coinGotCoord2  . . . . . . . . .	COORD	 00001C5E _DATA	
-coinGot  . . . . . . . . . . . .	DWord	 00001C4C _DATA	
-coinOutput1  . . . . . . . . . .	Byte	 00001C50 _DATA	
-coinOutput2  . . . . . . . . . .	Byte	 00001C53 _DATA	
-coinOutput3  . . . . . . . . . .	Byte	 00001C56 _DATA	
-coinSeed . . . . . . . . . . . .	DWord	 00001C40 _DATA	
-coinSymbol . . . . . . . . . . .	Byte	 00001C49 _DATA	
+coinAttribute  . . . . . . . . .	Word	 00001C4B _DATA	
+coinCoord  . . . . . . . . . . .	COORD	 00001C45 _DATA	
+coinGenerated  . . . . . . . . .	Byte	 00001C49 _DATA	
+coinGet  . . . . . . . . . . . .	Byte	 00001C63 _DATA	
+coinGotCoord1  . . . . . . . . .	COORD	 00001C5B _DATA	
+coinGotCoord2  . . . . . . . . .	COORD	 00001C5F _DATA	
+coinGot  . . . . . . . . . . . .	DWord	 00001C4D _DATA	
+coinOutput1  . . . . . . . . . .	Byte	 00001C51 _DATA	
+coinOutput2  . . . . . . . . . .	Byte	 00001C54 _DATA	
+coinOutput3  . . . . . . . . . .	Byte	 00001C57 _DATA	
+coinSeed . . . . . . . . . . . .	DWord	 00001C41 _DATA	
+coinSymbol . . . . . . . . . . .	Byte	 00001C4A _DATA	
 count  . . . . . . . . . . . . .	DWord	 0000001B _DATA	
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
-elapsedTime  . . . . . . . . . .	DWord	 00000035 _DATA	
-endCoinGotCoord  . . . . . . . .	COORD	 00001C38 _DATA	
-endCoinGot . . . . . . . . . . .	DWord	 00001BFD _DATA	
-endExitLeftPos . . . . . . . . .	COORD	 00001C20 _DATA	
-endExitLeftSymbol  . . . . . . .	DWord	 00001C24 _DATA	
-endExitRightPos  . . . . . . . .	COORD	 00001C2C _DATA	
-endExitRightSymbol . . . . . . .	DWord	 00001C30 _DATA	
-endKeyPos  . . . . . . . . . . .	Byte	 00001BFB _DATA	
-endStartLeftPos  . . . . . . . .	COORD	 00001C08 _DATA	
-endStartLeftSymbol . . . . . . .	DWord	 00001C0C _DATA	
-endStartRightPos . . . . . . . .	COORD	 00001C14 _DATA	
-endStartRightSymbol  . . . . . .	DWord	 00001C18 _DATA	
-endTimeCoord . . . . . . . . . .	COORD	 00001C3C _DATA	
-endTime  . . . . . . . . . . . .	DWord	 00001C01 _DATA	
-endconfirm . . . . . . . . . . .	Byte	 00001BFC _DATA	
-endscrfile . . . . . . . . . . .	Byte	 00001BF0 _DATA	
-escConfirm . . . . . . . . . . .	Byte	 00000028 _DATA	
+elapsedTime  . . . . . . . . . .	DWord	 00000036 _DATA	
+endCoinGotCoord  . . . . . . . .	COORD	 00001C39 _DATA	
+endCoinGot . . . . . . . . . . .	DWord	 00001BFE _DATA	
+endExitLeftPos . . . . . . . . .	COORD	 00001C21 _DATA	
+endExitLeftSymbol  . . . . . . .	DWord	 00001C25 _DATA	
+endExitRightPos  . . . . . . . .	COORD	 00001C2D _DATA	
+endExitRightSymbol . . . . . . .	DWord	 00001C31 _DATA	
+endKeyPos  . . . . . . . . . . .	Byte	 00001BFC _DATA	
+endStartLeftPos  . . . . . . . .	COORD	 00001C09 _DATA	
+endStartLeftSymbol . . . . . . .	DWord	 00001C0D _DATA	
+endStartRightPos . . . . . . . .	COORD	 00001C15 _DATA	
+endStartRightSymbol  . . . . . .	DWord	 00001C19 _DATA	
+endTimeCoord . . . . . . . . . .	COORD	 00001C3D _DATA	
+endTime  . . . . . . . . . . . .	DWord	 00001C02 _DATA	
+endconfirm . . . . . . . . . . .	Byte	 00001BFD _DATA	
+endscrfile . . . . . . . . . . .	Byte	 00001BF1 _DATA	
+escConfirm . . . . . . . . . . .	Byte	 00000029 _DATA	
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
-fileHandle . . . . . . . . . . .	DWord	 00000041 _DATA	
-gamescrfile  . . . . . . . . . .	Byte	 0000004D _DATA	
+fileHandle . . . . . . . . . . .	DWord	 00000042 _DATA	
+gamescrfile  . . . . . . . . . .	Byte	 0000004E _DATA	
 gravity  . . . . . . . . . . . .	Number	 00000001h   
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
-initialExitLeftPos . . . . . . .	COORD	 00001BD8 _DATA	
-initialExitLeftSymbol  . . . . .	DWord	 00001BDC _DATA	
-initialExitRightPos  . . . . . .	COORD	 00001BE4 _DATA	
-initialExitRightSymbol . . . . .	DWord	 00001BE8 _DATA	
-initialKeyPos  . . . . . . . . .	Byte	 00001BBE _DATA	
-initialStartLeftPos  . . . . . .	COORD	 00001BC0 _DATA	
-initialStartLeftSymbol . . . . .	DWord	 00001BC4 _DATA	
-initialStartRightPos . . . . . .	COORD	 00001BCC _DATA	
-initialStartRightSymbol  . . . .	DWord	 00001BD0 _DATA	
-initialconfirm . . . . . . . . .	Byte	 00001BBF _DATA	
-initialscrfile . . . . . . . . .	Byte	 00001BB4 _DATA	
-isDead . . . . . . . . . . . . .	Byte	 00001C06 _DATA	
-jumpForce  . . . . . . . . . . .	Number	 00000005h   
+initialExitLeftPos . . . . . . .	COORD	 00001BD9 _DATA	
+initialExitLeftSymbol  . . . . .	DWord	 00001BDD _DATA	
+initialExitRightPos  . . . . . .	COORD	 00001BE5 _DATA	
+initialExitRightSymbol . . . . .	DWord	 00001BE9 _DATA	
+initialKeyPos  . . . . . . . . .	Byte	 00001BBF _DATA	
+initialStartLeftPos  . . . . . .	COORD	 00001BC1 _DATA	
+initialStartLeftSymbol . . . . .	DWord	 00001BC5 _DATA	
+initialStartRightPos . . . . . .	COORD	 00001BCD _DATA	
+initialStartRightSymbol  . . . .	DWord	 00001BD1 _DATA	
+initialconfirm . . . . . . . . .	Byte	 00001BC0 _DATA	
+initialscrfile . . . . . . . . .	Byte	 00001BB5 _DATA	
+isDead . . . . . . . . . . . . .	Byte	 00001C07 _DATA	
+isRunning  . . . . . . . . . . .	Byte	 00000025 _DATA	
+jumpForce  . . . . . . . . . . .	Number	 00000004h   
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
@@ -1329,24 +1362,24 @@ lightGreen . . . . . . . . . . .	Number	 0000000Ah
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
-needsRefresh . . . . . . . . . .	Byte	 00001C05 _DATA	
-onPlatform . . . . . . . . . . .	Byte	 00000027 _DATA	
+needsRefresh . . . . . . . . . .	Byte	 00001C06 _DATA	
+onPlatform . . . . . . . . . . .	Byte	 00000028 _DATA	
 outputHandle . . . . . . . . . .	DWord	 00000013 _DATA	
 platformBuffer . . . . . . . . .	Byte	 00000001 _DATA	
 platformCoord  . . . . . . . . .	COORD	 0000000B _DATA	
-platformLevel  . . . . . . . . .	Word	 00000025 _DATA	
-playerAttributes . . . . . . . .	Word	 0000002D _DATA	
+platformLevel  . . . . . . . . .	Word	 00000026 _DATA	
+playerAttributes . . . . . . . .	Word	 0000002E _DATA	
 playerSize . . . . . . . . . . .	Number	 00000001h   
 playerXY . . . . . . . . . . . .	COORD	 0000001F _DATA	
 player . . . . . . . . . . . . .	Byte	 00000000 _DATA	
-preSeed  . . . . . . . . . . . .	DWord	 00001C67 _DATA	
-prevKeyPos . . . . . . . . . . .	Byte	 00001C07 _DATA	
+preSeed  . . . . . . . . . . . .	DWord	 00001C68 _DATA	
+prevKeyPos . . . . . . . . . . .	Byte	 00001C08 _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
-screenBytesWritten . . . . . . .	DWord	 00000049 _DATA	
-seed . . . . . . . . . . . . . .	DWord	 00001C63 _DATA	
-startTime  . . . . . . . . . . .	DWord	 00000031 _DATA	
-timeLimit  . . . . . . . . . . .	DWord	 00000039 _DATA	
-updateInterval . . . . . . . . .	Word	 0000002F _DATA	
+screenBytesWritten . . . . . . .	DWord	 0000004A _DATA	
+seed . . . . . . . . . . . . . .	DWord	 00001C64 _DATA	
+startTime  . . . . . . . . . . .	DWord	 00000032 _DATA	
+timeLimit  . . . . . . . . . . .	DWord	 0000003A _DATA	
+updateInterval . . . . . . . . .	Word	 00000030 _DATA	
 velocityY  . . . . . . . . . . .	Word	 00000023 _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA

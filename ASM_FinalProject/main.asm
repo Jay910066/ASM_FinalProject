@@ -3,7 +3,7 @@ INCLUDELIB kernel32.lib
 
 playerSize = 1
 gravity = 1
-jumpForce = 5
+jumpForce = 4
 
 .data
 player BYTE 'P'
@@ -17,6 +17,7 @@ bytesWritten DWORD 0
 count DWORD 0
 playerXY COORD <10,5>
 velocityY SWORD 0
+isRunning BYTE 0
 
 platformLevel WORD 24
 onPlatform BYTE 1
@@ -89,8 +90,8 @@ coinGot DWORD 0
 coinOutput1 db "/5",0
 coinOutput2 db "/8",0
 coinOutput3 db "/12",0
-coinGotCoord1 COORD <1,2>
-coinGotCoord2 COORD <3,2>
+coinGotCoord1 COORD <7,2>
+coinGotCoord2 COORD <9,2>
 coinGet byte 0
 seed DWORD ?
 preSeed DWORD 0
@@ -182,7 +183,7 @@ updatePhysics PROC uses eax ebx
 	.ENDIF
 
 	; 檢查是否掉出螢幕下方
-	.IF playerXY.Y >= 29
+	.IF playerXY.Y >= 26
 		mov isDead, 1
 	.ENDIF
     ; 更新玩家的 Y 座標
@@ -253,26 +254,47 @@ readPlayerMoveInput PROC
     ; 檢查W鍵（向上移動）
     INVOKE GetAsyncKeyState, 'W'
     test ax, 8000h
-    jz CheckA
+    jz CheckShift
 	cmp onPlatform, 1
-	jne CheckA
+	jne CheckShift
 	mov ax, jumpForce
 	sub velocityY, ax
 	mov onPlatform, 0
-
+CheckShift:
+	; 檢查Shift鍵（加速）
+	mov isRunning, 0
+	INVOKE GetAsyncKeyState, VK_SHIFT
+	test ax, 8000h
+	jz CheckA
+	mov isRunning, 1
 CheckA:
     ; 檢查A鍵（向左移動）
     INVOKE GetAsyncKeyState, 'A'
     test ax, 8000h
     jz CheckD
-    dec playerXY.X           ; 玩家X座標減少，向左移動
+    .IF isRunning == 1
+		sub playerXY.X, 2
+	.ELSE
+		dec playerXY.X
+	.ENDIF
+							
+	.IF playerXY.X <= 0
+		mov playerXY.X, 1
+	.ENDIF
 
 CheckD:
     ; 檢查D鍵（向右移動）
     INVOKE GetAsyncKeyState, 'D'
     test ax, 8000h
     jz CheckESC
-    inc playerXY.X           ; 玩家X座標增加，向右移動
+    .IF isRunning == 1
+		add playerXY.X, 2
+	.ELSE
+		inc playerXY.X
+	.ENDIF
+	.IF playerXY.X >= 119
+		mov playerXY.X, 118
+	.ENDIF
 
 CheckESC:
     ; 檢查ESC鍵（退出遊戲）
@@ -335,7 +357,7 @@ displayTime PROC uses eax ebx ecx edx
 	mov eax, timeLimit
 	sub eax, elapsedTime
 	mov endTime, eax
-	mov dl, 1
+	mov dl, 6
 	mov dh, 1
 	call gotoxy
 	call WriteDec
