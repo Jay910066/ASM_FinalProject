@@ -11,7 +11,7 @@
                    │      total of points :                                                            │
                    │                                                                                   │
                    │                                                                                   │
-                   │                                                                                   │
+                   │      passed levels   : /3                                                         │
                    │                                                                                   │
                    │                                                                                   │
                    │                                                                                   │
