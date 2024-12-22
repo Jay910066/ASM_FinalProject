@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/21/24 20:33:29
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/22/24 11:29:58
 main.asm						     Page 1 - 1
 
 
@@ -67,8 +67,8 @@ main.asm						     Page 1 - 1
  0000004E 00000000		screenBytesWritten DWORD ?
 
 				;遊戲畫面資料
- 00000052 67 61 6D 65 66	gamescrfile BYTE 'gamefield1.txt',0
-	   69 65 6C 64 31
+ 00000052 67 61 6D 65 66	gamescrfile BYTE 'gamefield2.txt',0
+	   69 65 6C 64 32
 	   2E 74 78 74 00
 
 				;初始畫面資料
@@ -148,8 +148,8 @@ main.asm						     Page 1 - 1
 
  00000016			initialLoop:
  00000016  E8 00000000 E		call Clrscr
- 0000001B  E8 0000046D			call displayInitialscr
- 00000020  E8 00000509			call readInputInitialscr
+ 0000001B  E8 00000482			call displayInitialscr
+ 00000020  E8 0000051E			call readInputInitialscr
  00000025  80 3D 00001BC4 R		cmp Initialconfirm, 1
 	   01
  0000002C  74 02			je conti
@@ -179,126 +179,128 @@ main.asm						     Page 1 - 1
 	   00
  0000007B  C7 05 00001C51 R		mov coinGot, 0
 	   00000000
-					
- 00000085			GameLoop:
- 00000085  E8 00000000 E		call Clrscr
- 0000008A  E8 000000C5			call updatePhysics
-					INVOKE drawScreen, ADDR gamescrfile
- 00000099  E8 00000265			call drawPlayer
- 0000009E  E8 00000126			call checkPlatformLevel
- 000000A3  E8 000003A6			call displayTime
- 000000A8  E8 000006C9			call displayCoinGot
- 000000AD  E8 00000185			call readPlayerMoveInput
- 000000B2  E8 000007D6			call getCoin
- 000000B7  E8 000005EB			call generateCoins
- 000000BC  E8 000006D9			call cheatInput			; 按C鍵進入下一關
- 000000C1  E8 0000030A			call updateLevel
- 000000C6  E8 00000806			call endGame
- 000000CB  80 3D 00000029 R		cmp  escConfirm, 1
-	   01
- 000000D2  74 11			je endLoop
-					invoke Sleep, updateInterval
- 000000E3  EB A0			jmp GameLoop
-
- 000000E5			endLoop:
- 000000E5  80 3D 00001C0A R		cmp needsRefresh, 1
-	   01
- 000000EC  74 02			je Refresh
- 000000EE  EB 18			jmp CheckInput
-
- 000000F0			Refresh:
- 000000F0  E8 00000000 E		call Clrscr
- 000000F5  E8 000004A0			call displayEndscr
- 000000FA  E8 000006E7			call displayEndData
- 000000FF  C6 05 00001C0A R		mov needsRefresh, 0
+ 00000085  C6 05 00001C4D R		mov coinGenerated, 0
 	   00
- 00000106  EB 00			jmp CheckInput
-
- 00000108			CheckInput:
- 00000108  E8 0000052E			call readInputEndscr
- 0000010D  80 3D 00001C01 R		cmp endconfirm, 1
+					
+ 0000008C			GameLoop:
+ 0000008C  E8 00000000 E		call Clrscr
+ 00000091  E8 000000C5			call updatePhysics
+					INVOKE drawScreen, ADDR gamescrfile
+ 000000A0  E8 00000265			call drawPlayer
+ 000000A5  E8 00000126			call checkPlatformLevel
+ 000000AA  E8 000003B4			call displayTime
+ 000000AF  E8 000007F8			call displayCoinGot
+ 000000B4  E8 00000185			call readPlayerMoveInput
+ 000000B9  E8 00000905			call getCoin
+ 000000BE  E8 000005F9			call generateCoins
+ 000000C3  E8 00000808			call cheatInput			; 按C鍵進入下一關
+ 000000C8  E8 0000030A			call updateLevel
+ 000000CD  E8 00000935			call endGame
+ 000000D2  80 3D 00000029 R		cmp  escConfirm, 1
 	   01
- 00000114  0F 84 FFFFFF16		je conti
- 0000011A  A0 00001C00 R		mov al, endKeyPos
- 0000011F  8A 25 00001C0C R		mov ah, prevKeyPos
- 00000125  3A E0			cmp ah, al
- 00000127  74 13			je SkipRefresh
- 00000129  C6 05 00001C0A R		mov needsRefresh, 1
-	   01
- 00000130  8A 25 00001C00 R		mov ah, endKeyPos
- 00000136  88 25 00001C0C R		mov prevKeyPos, ah
-
- 0000013C			SkipRefresh:
+ 000000D9  74 11			je endLoop
 					invoke Sleep, updateInterval
- 0000014B  EB 98			jmp endLoop
+ 000000EA  EB A0			jmp GameLoop
+
+ 000000EC			endLoop:
+ 000000EC  80 3D 00001C0A R		cmp needsRefresh, 1
+	   01
+ 000000F3  74 02			je Refresh
+ 000000F5  EB 18			jmp CheckInput
+
+ 000000F7			Refresh:
+ 000000F7  E8 00000000 E		call Clrscr
+ 000000FC  E8 000004AE			call displayEndscr
+ 00000101  E8 00000816			call displayEndData
+ 00000106  C6 05 00001C0A R		mov needsRefresh, 0
+	   00
+ 0000010D  EB 00			jmp CheckInput
+
+ 0000010F			CheckInput:
+ 0000010F  E8 0000053C			call readInputEndscr
+ 00000114  80 3D 00001C01 R		cmp endconfirm, 1
+	   01
+ 0000011B  0F 84 FFFFFF0F		je conti
+ 00000121  A0 00001C00 R		mov al, endKeyPos
+ 00000126  8A 25 00001C0C R		mov ah, prevKeyPos
+ 0000012C  3A E0			cmp ah, al
+ 0000012E  74 13			je SkipRefresh
+ 00000130  C6 05 00001C0A R		mov needsRefresh, 1
+	   01
+ 00000137  8A 25 00001C00 R		mov ah, endKeyPos
+ 0000013D  88 25 00001C0C R		mov prevKeyPos, ah
+
+ 00000143			SkipRefresh:
+					invoke Sleep, updateInterval
+ 00000152  EB 98			jmp endLoop
 
 					exit
- 00000154			main ENDP
+ 0000015B			main ENDP
 
- 00000154			updatePhysics PROC uses eax ebx
+ 0000015B			updatePhysics PROC uses eax ebx
 					; 檢查是否超出螢幕上方
 					.IF playerXY.Y >= 60000
- 00000161  66| C7 05				mov playerXY.Y, 0
+ 00000168  66| C7 05				mov playerXY.Y, 0
 	   00000021 R
 	   0000
- 0000016A  66| C7 05				mov platformLevel, 0
+ 00000171  66| C7 05				mov platformLevel, 0
 	   00000026 R
 	   0000
 					.ENDIF
 
 					; 檢查是否掉出螢幕下方
 					.IF playerXY.Y >= 26
- 0000017D  C6 05 00001C0B R			mov isDead, 1
+ 00000184  C6 05 00001C0B R			mov isDead, 1
 	   01
 					.ENDIF
 				    ; 更新玩家的 Y 座標
- 00000184  66| A1		    mov ax, velocityY
+ 0000018B  66| A1		    mov ax, velocityY
 	   00000023 R
- 0000018A  66| 01 05		    add playerXY.Y, ax        ; 根據垂直速度更新位置
+ 00000191  66| 01 05		    add playerXY.Y, ax        ; 根據垂直速度更新位置
 	   00000021 R
 
 				    ; 應用重力（加速垂直速度）
- 00000191  66| 83 05		    add velocityY, gravity    ; 重力影響：速度越來越快
+ 00000198  66| 83 05		    add velocityY, gravity    ; 重力影響：速度越來越快
 	   00000023 R 01
 
 				    ; 檢查是否低於地面
- 00000199  66| A1		    mov ax, playerXY.Y
+ 000001A0  66| A1		    mov ax, playerXY.Y
 	   00000021 R
- 0000019F  66| 3B 05		    cmp ax, platformLevel
+ 000001A6  66| 3B 05		    cmp ax, platformLevel
 	   00000026 R
- 000001A6  7E 1E			jle EndPhysics            ; 如果未超過地面，跳過地面處理
+ 000001AD  7E 1E			jle EndPhysics            ; 如果未超過地面，跳過地面處理
 
 				    ; 如果超出地面，重置到地面
- 000001A8  66| A1		    mov ax, platformLevel
+ 000001AF  66| A1		    mov ax, platformLevel
 	   00000026 R
- 000001AE  66| A3		    mov playerXY.Y, ax        ; 將玩家重置到地面
+ 000001B5  66| A3		    mov playerXY.Y, ax        ; 將玩家重置到地面
 	   00000021 R
- 000001B4  66| C7 05		    mov velocityY, 0          ; 停止垂直運動
+ 000001BB  66| C7 05		    mov velocityY, 0          ; 停止垂直運動
 	   00000023 R
 	   0000
- 000001BD  C6 05 00000028 R	    mov onPlatform, 1           ; 標記玩家在地面上
+ 000001C4  C6 05 00000028 R	    mov onPlatform, 1           ; 標記玩家在地面上
 	   01
- 000001C4  EB 00		    jmp EndPhysics
+ 000001CB  EB 00		    jmp EndPhysics
 
- 000001C6			EndPhysics:
+ 000001CD			EndPhysics:
 				    ret
- 000001C9			updatePhysics ENDP
+ 000001D0			updatePhysics ENDP
 
 				; 檢查平台高度
- 000001C9			checkPlatformLevel PROC uses eax ebx ecx edx
- 000001CD  66| A1			mov ax, playerXY.X
+ 000001D0			checkPlatformLevel PROC uses eax ebx ecx edx
+ 000001D4  66| A1			mov ax, playerXY.X
 	   0000001F R
- 000001D3  66| 8B 1D			mov bx, playerXY.Y
+ 000001DA  66| 8B 1D			mov bx, playerXY.Y
 	   00000021 R
- 000001DA  66| 43			inc bx
- 000001DC  66| A3			mov platformCoord.X, ax
+ 000001E1  66| 43			inc bx
+ 000001E3  66| A3			mov platformCoord.X, ax
 	   0000000B R
- 000001E2  66| 89 1D			mov platformCoord.Y, bx
+ 000001E9  66| 89 1D			mov platformCoord.Y, bx
 	   0000000D R
 
- 000001E9  66| B9 001E			mov cx, 30
- 000001ED			detectPlatform:
- 000001ED  66| 8B D1			mov dx, cx
+ 000001F0  66| B9 001E			mov cx, 30
+ 000001F4			detectPlatform:
+ 000001F4  66| 8B D1			mov dx, cx
 
 					INVOKE ReadConsoleOutputCharacterA,
 					outputHandle,
@@ -307,19 +309,19 @@ main.asm						     Page 1 - 1
 					platformCoord,
 					ADDR charRead
 
- 0000020D  A0 00000001 R		mov al, platformBuffer
+ 00000214  A0 00000001 R		mov al, platformBuffer
 					.IF al != 32
- 00000216  66| A1				mov ax, platformCoord.Y
+ 0000021D  66| A1				mov ax, platformCoord.Y
 	   0000000D R
- 0000021C  66| 48				dec ax
- 0000021E  66| A3				mov platformLevel, ax
+ 00000223  66| 48				dec ax
+ 00000225  66| A3				mov platformLevel, ax
 	   00000026 R
- 00000224  EB 0C				jmp EndCheck
+ 0000022B  EB 0C				jmp EndCheck
 					.ENDIF
- 00000226  66| FF 05			inc platformCoord.Y
+ 0000022D  66| FF 05			inc platformCoord.Y
 	   0000000D R
- 0000022D  66| 8B CA			mov cx, dx
- 00000230  E2 BB			loop detectPlatform
+ 00000234  66| 8B CA			mov cx, dx
+ 00000237  E2 BB			loop detectPlatform
 
 					; 輸出Debug訊息
 				;showINFO:
@@ -328,82 +330,82 @@ main.asm						     Page 1 - 1
 					;call gotoxy
 					;call WriteDec
 
- 00000232			EndCheck:
+ 00000239			EndCheck:
 					ret
- 00000237			checkPlatformLevel ENDP
+ 0000023E			checkPlatformLevel ENDP
 
- 00000237			readPlayerMoveInput PROC
+ 0000023E			readPlayerMoveInput PROC
 				    ; 檢查W鍵（向上移動）
 				    INVOKE GetAsyncKeyState, 'W'
- 0000023E  66| A9 8000		    test ax, 8000h
- 00000242  74 1B		    jz CheckShift
- 00000244  80 3D 00000028 R		cmp onPlatform, 1
+ 00000245  66| A9 8000		    test ax, 8000h
+ 00000249  74 1B		    jz CheckShift
+ 0000024B  80 3D 00000028 R		cmp onPlatform, 1
 	   01
- 0000024B  75 12			jne CheckShift
- 0000024D  66| B8 0004			mov ax, jumpForce
- 00000251  66| 29 05			sub velocityY, ax
+ 00000252  75 12			jne CheckShift
+ 00000254  66| B8 0004			mov ax, jumpForce
+ 00000258  66| 29 05			sub velocityY, ax
 	   00000023 R
- 00000258  C6 05 00000028 R		mov onPlatform, 0
+ 0000025F  C6 05 00000028 R		mov onPlatform, 0
 	   00
- 0000025F			CheckShift:
+ 00000266			CheckShift:
 					; 檢查Shift鍵（加速）
- 0000025F  C6 05 00000025 R		mov isRunning, 0
+ 00000266  C6 05 00000025 R		mov isRunning, 0
 	   00
 					INVOKE GetAsyncKeyState, VK_SHIFT
- 0000026D  66| A9 8000			test ax, 8000h
- 00000271  74 07			jz CheckA
- 00000273  C6 05 00000025 R		mov isRunning, 1
+ 00000274  66| A9 8000			test ax, 8000h
+ 00000278  74 07			jz CheckA
+ 0000027A  C6 05 00000025 R		mov isRunning, 1
 	   01
- 0000027A			CheckA:
+ 00000281			CheckA:
 				    ; 檢查A鍵（向左移動）
 				    INVOKE GetAsyncKeyState, 'A'
- 00000281  66| A9 8000		    test ax, 8000h
- 00000285  74 2D		    jz CheckD
+ 00000288  66| A9 8000		    test ax, 8000h
+ 0000028C  74 2D		    jz CheckD
 				    .IF isRunning == 1
- 00000290  66| 83 2D				sub playerXY.X, 2
+ 00000297  66| 83 2D				sub playerXY.X, 2
 	   0000001F R 02
 					.ELSE
- 0000029A  66| FF 0D				dec playerXY.X
+ 000002A1  66| FF 0D				dec playerXY.X
 	   0000001F R
 					.ENDIF
 											
 					.IF playerXY.X <= 0
- 000002AB  66| C7 05				mov playerXY.X, 1
+ 000002B2  66| C7 05				mov playerXY.X, 1
 	   0000001F R
 	   0001
 					.ENDIF
 
- 000002B4			CheckD:
+ 000002BB			CheckD:
 				    ; 檢查D鍵（向右移動）
 				    INVOKE GetAsyncKeyState, 'D'
- 000002BB  66| A9 8000		    test ax, 8000h
- 000002BF  74 2D		    jz CheckESC
+ 000002C2  66| A9 8000		    test ax, 8000h
+ 000002C6  74 2D		    jz CheckESC
 				    .IF isRunning == 1
- 000002CA  66| 83 05				add playerXY.X, 2
+ 000002D1  66| 83 05				add playerXY.X, 2
 	   0000001F R 02
 					.ELSE
- 000002D4  66| FF 05				inc playerXY.X
+ 000002DB  66| FF 05				inc playerXY.X
 	   0000001F R
 					.ENDIF
 					.IF playerXY.X >= 119
- 000002E5  66| C7 05				mov playerXY.X, 118
+ 000002EC  66| C7 05				mov playerXY.X, 118
 	   0000001F R
 	   0076
 					.ENDIF
 
- 000002EE			CheckESC:
+ 000002F5			CheckESC:
 				    ; 檢查ESC鍵（退出遊戲）
 				    INVOKE GetAsyncKeyState, VK_ESCAPE
- 000002F5  66| A9 8000		    test ax, 8000h
- 000002F9  74 07		    jz EndInput
- 000002FB  C6 05 00000029 R	    mov escConfirm,1
+ 000002FC  66| A9 8000		    test ax, 8000h
+ 00000300  74 07		    jz EndInput
+ 00000302  C6 05 00000029 R	    mov escConfirm,1
 	   01
 
- 00000302			EndInput:
- 00000302  C3				ret
- 00000303			readPlayerMoveInput ENDP
+ 00000309			EndInput:
+ 00000309  C3				ret
+ 0000030A			readPlayerMoveInput ENDP
 
- 00000303			drawPlayer PROC
+ 0000030A			drawPlayer PROC
 					INVOKE WriteConsoleOutputAttribute,
 					outputHandle, 
 					OFFSET playerAttributes,
@@ -417,15 +419,15 @@ main.asm						     Page 1 - 1
 					playerSize,
 					playerXY,
 					OFFSET count
- 0000033D  C3				ret
- 0000033E			drawPlayer ENDP
+ 00000344  C3				ret
+ 00000345			drawPlayer ENDP
 
- 0000033E			drawScreen PROC uses eax ebx ecx edx, screenFileName:PTR BYTE
+ 00000345			drawScreen PROC uses eax ebx ecx edx, screenFileName:PTR BYTE
 				    ;打開文字檔案
 					INVOKE CreateFile, screenFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
- 0000035F  A3 00000046 R		mov fileHandle, eax
+ 00000366  A3 00000046 R		mov fileHandle, eax
 
- 00000364			ReadLoop:
+ 0000036B			ReadLoop:
 					;使用UTF-8編碼，顯示符號
 					INVOKE SetConsoleOutputCP, 65001
 
@@ -433,73 +435,77 @@ main.asm						     Page 1 - 1
 					INVOKE ReadFile, fileHandle, ADDR buffer, SIZEOF buffer, ADDR bytesRead, NULL
 
 					;畫面更新及輸出檔案
- 0000038A  E8 00000000 E		call Clrscr
+ 00000391  E8 00000000 E		call Clrscr
 					INVOKE SetFilePointer, fileHandle, 0, NULL, FILE_BEGIN
 					INVOKE WriteConsole, outputHandle, ADDR buffer, bytesRead, ADDR screenBytesWritten, NULL
 
- 000003BD			EndDraw:
+ 000003C4			EndDraw:
 					;關閉檔案
 				    INVOKE CloseHandle, fileHandle
 				    ret
- 000003D0			drawScreen ENDP
+ 000003D7			drawScreen ENDP
 
- 000003D0			updateLevel PROC
+ 000003D7			updateLevel PROC
 					.IF coinGot == 5 && currentLevel == 1
- 000003E2  C7 05 00000042 R			mov currentLevel, 2
+ 000003E9  C7 05 00000042 R			mov currentLevel, 2
 	   00000002
- 000003EC  C6 05 0000005B R			mov gamescrfile[9], '2'
+ 000003F3  C6 05 0000005B R			mov gamescrfile[9], '2'
 	   32
- 000003F3  66| C7 05				mov playerXY.X, 10
+ 000003FA  66| C7 05				mov playerXY.X, 10
 	   0000001F R
 	   000A
- 000003FC  66| C7 05				mov playerXY.Y, 5
+ 00000403  66| C7 05				mov playerXY.Y, 5
 	   00000021 R
 	   0005
- 00000405  66| C7 05				mov velocityY, 0
+ 0000040C  66| C7 05				mov velocityY, 0
 	   00000023 R
 	   0000
+ 00000415  C6 05 00001C4D R			mov coinGenerated,0
+	   00
 					.ELSEIF coinGot == 8 && currentLevel == 2
- 00000422  C7 05 00000042 R			mov currentLevel, 3
+ 00000430  C7 05 00000042 R			mov currentLevel, 3
 	   00000003
- 0000042C  C6 05 0000005B R			mov gamescrfile[9], '3'
+ 0000043A  C6 05 0000005B R			mov gamescrfile[9], '3'
 	   33
- 00000433  66| C7 05				mov playerXY.X, 10
+ 00000441  66| C7 05				mov playerXY.X, 10
 	   0000001F R
 	   000A
- 0000043C  66| C7 05				mov playerXY.Y, 5
+ 0000044A  66| C7 05				mov playerXY.Y, 5
 	   00000021 R
 	   0005
- 00000445  66| C7 05				mov velocityY, 0
+ 00000453  66| C7 05				mov velocityY, 0
 	   00000023 R
 	   0000
+ 0000045C  C6 05 00001C4D R			mov coinGenerated,0
+	   00
 					.ENDIF
 
- 0000044E			updateLevel ENDP
+ 00000463			updateLevel ENDP
 
- 0000044E			displayTime PROC uses eax ebx ecx edx
+ 00000463			displayTime PROC uses eax ebx ecx edx
 					INVOKE GetTickCount
- 00000457  2B 05 00000032 R		sub eax, startTime
- 0000045D  99				cdq
- 0000045E  BB 000003E8			mov ebx, 1000
- 00000463  F7 F3			div ebx
- 00000465  A3 00000036 R		mov elapsedTime, eax
- 0000046A  A1 0000003A R		mov eax, timeLimit
- 0000046F  2B 05 00000036 R		sub eax, elapsedTime
- 00000475  A3 00001C06 R		mov endTime, eax
- 0000047A  B2 06			mov dl, 6
- 0000047C  B6 01			mov dh, 1
- 0000047E  E8 00000000 E		call gotoxy
- 00000483  E8 00000000 E		call WriteDec
+ 0000046C  2B 05 00000032 R		sub eax, startTime
+ 00000472  99				cdq
+ 00000473  BB 000003E8			mov ebx, 1000
+ 00000478  F7 F3			div ebx
+ 0000047A  A3 00000036 R		mov elapsedTime, eax
+ 0000047F  A1 0000003A R		mov eax, timeLimit
+ 00000484  2B 05 00000036 R		sub eax, elapsedTime
+ 0000048A  A3 00001C06 R		mov endTime, eax
+ 0000048F  B2 06			mov dl, 6
+ 00000491  B6 01			mov dh, 1
+ 00000493  E8 00000000 E		call gotoxy
+ 00000498  E8 00000000 E		call WriteDec
 					ret
- 0000048D			displayTime ENDP
+ 000004A2			displayTime ENDP
 
- 0000048D			displayInitialscr PROC uses eax ebx ecx edx
+ 000004A2			displayInitialscr PROC uses eax ebx ecx edx
 				    INVOKE drawScreen, ADDR initialscrfile
- 0000049B  80 3D 00001BC3 R		cmp initialKeyPos, 1
+ 000004B0  80 3D 00001BC3 R		cmp initialKeyPos, 1
 	   01
- 000004A2  74 3C			je Pos2 
+ 000004B7  74 3C			je Pos2 
 
- 000004A4			Pos1:
+ 000004B9			Pos1:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET initialStartLeftSymbol,
@@ -513,9 +519,9 @@ main.asm						     Page 1 - 1
 					1, 
 					initialStartRightPos,
 					OFFSET count
- 000004DE  EB 3A			jmp conti
+ 000004F3  EB 3A			jmp conti
 
- 000004E0			Pos2:
+ 000004F5			Pos2:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET initialExitLeftSymbol,
@@ -530,55 +536,55 @@ main.asm						     Page 1 - 1
 					initialExitRightPos,
 					OFFSET count
 
- 0000051A			conti:
+ 0000052F			conti:
 					INVOKE Sleep, updateInterval
 
- 00000529			EndDisplay:
+ 0000053E			EndDisplay:
 				    ret
- 0000052E			displayInitialscr ENDP
+ 00000543			displayInitialscr ENDP
 
- 0000052E			readInputInitialscr PROC uses eax ebx ecx edx
+ 00000543			readInputInitialscr PROC uses eax ebx ecx edx
 					INVOKE GetAsyncKeyState, VK_RETURN
- 00000539  A9 00008000			test eax, 8000h                     
- 0000053E  74 21		    jz checkW
- 00000540  80 3D 00001BC3 R		cmp initialKeyPos, 0 ;判斷按鍵位置
+ 0000054E  A9 00008000			test eax, 8000h                     
+ 00000553  74 21		    jz checkW
+ 00000555  80 3D 00001BC3 R		cmp initialKeyPos, 0 ;判斷按鍵位置
 	   00
- 00000547  74 0C			je confirm
- 00000549  E8 00000000 E		call Clrscr
+ 0000055C  74 0C			je confirm
+ 0000055E  E8 00000000 E		call Clrscr
 					INVOKE ExitProcess, 0
 
- 00000555			confirm:
- 00000555  C6 05 00001BC4 R		mov initialconfirm, 1
+ 0000056A			confirm:
+ 0000056A  C6 05 00001BC4 R		mov initialconfirm, 1
 	   01
 					ret
 
- 00000561			checkW:
+ 00000576			checkW:
 					INVOKE GetAsyncKeyState, 'W'
- 00000568  A9 00008000			test eax, 8000h                     
- 0000056D  74 0C		    jz checkS
- 0000056F  C6 05 00001BC3 R		mov initialKeyPos, 0
+ 0000057D  A9 00008000			test eax, 8000h                     
+ 00000582  74 0C		    jz checkS
+ 00000584  C6 05 00001BC3 R		mov initialKeyPos, 0
 	   00
 					ret
 
- 0000057B			checkS:
+ 00000590			checkS:
 					INVOKE GetAsyncKeyState, 'S'
- 00000582  A9 00008000			test eax, 8000h                     
- 00000587  74 0C		    jz no_key_pressed
- 00000589  C6 05 00001BC3 R		mov initialKeyPos, 1
+ 00000597  A9 00008000			test eax, 8000h                     
+ 0000059C  74 0C		    jz no_key_pressed
+ 0000059E  C6 05 00001BC3 R		mov initialKeyPos, 1
 	   01
 					ret
 
- 00000595			no_key_pressed:
+ 000005AA			no_key_pressed:
 					ret
- 0000059A			readInputInitialscr ENDP
+ 000005AF			readInputInitialscr ENDP
 
- 0000059A			displayEndscr PROC uses eax ebx ecx edx
+ 000005AF			displayEndscr PROC uses eax ebx ecx edx
 				    INVOKE drawScreen, ADDR endscrfile
- 000005A8  80 3D 00001C00 R		cmp endKeyPos, 1
+ 000005BD  80 3D 00001C00 R		cmp endKeyPos, 1
 	   01
- 000005AF  74 3C			je Pos2 
+ 000005C4  74 3C			je Pos2 
 
- 000005B1			Pos1:
+ 000005C6			Pos1:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET endStartLeftSymbol,
@@ -592,9 +598,9 @@ main.asm						     Page 1 - 1
 					1, 
 					endStartRightPos,
 					OFFSET count
- 000005EB  EB 3A			jmp conti
+ 00000600  EB 3A			jmp conti
 
- 000005ED			Pos2:
+ 00000602			Pos2:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle, 
 					OFFSET endExitLeftSymbol,
@@ -609,103 +615,211 @@ main.asm						     Page 1 - 1
 					endExitRightPos,
 					OFFSET count
 
- 00000627			conti:
+ 0000063C			conti:
 					INVOKE Sleep, updateInterval
 
- 00000636			EndDisplay:
+ 0000064B			EndDisplay:
 				    ret
- 0000063B			displayEndscr ENDP
+ 00000650			displayEndscr ENDP
 
- 0000063B			readInputEndscr PROC uses eax ebx ecx edx
+ 00000650			readInputEndscr PROC uses eax ebx ecx edx
 					INVOKE GetAsyncKeyState, VK_RETURN
- 00000646  A9 00008000			test eax, 8000h                     
- 0000064B  74 21		    jz checkA
- 0000064D  80 3D 00001C00 R		cmp endKeyPos, 0 ;判斷按鍵位置
+ 0000065B  A9 00008000			test eax, 8000h                     
+ 00000660  74 21		    jz checkA
+ 00000662  80 3D 00001C00 R		cmp endKeyPos, 0 ;判斷按鍵位置
 	   00
- 00000654  74 0C			je confirm
- 00000656  E8 00000000 E		call Clrscr
+ 00000669  74 0C			je confirm
+ 0000066B  E8 00000000 E		call Clrscr
 					INVOKE ExitProcess, 0
 
- 00000662			confirm:
- 00000662  C6 05 00001C01 R		mov endconfirm, 1
+ 00000677			confirm:
+ 00000677  C6 05 00001C01 R		mov endconfirm, 1
 	   01
 					ret
 
- 0000066E			checkA:
+ 00000683			checkA:
 					INVOKE GetAsyncKeyState, 'A'
- 00000675  A9 00008000			test eax, 8000h                     
- 0000067A  74 0C		    jz checkD
- 0000067C  C6 05 00001C00 R		mov endKeyPos, 0
+ 0000068A  A9 00008000			test eax, 8000h                     
+ 0000068F  74 0C		    jz checkD
+ 00000691  C6 05 00001C00 R		mov endKeyPos, 0
 	   00
 					ret
 
- 00000688			checkD:
+ 0000069D			checkD:
 					INVOKE GetAsyncKeyState, 'D'
- 0000068F  A9 00008000			test eax, 8000h                     
- 00000694  74 0C		    jz no_key_pressed
- 00000696  C6 05 00001C00 R		mov endKeyPos, 1
+ 000006A4  A9 00008000			test eax, 8000h                     
+ 000006A9  74 0C		    jz no_key_pressed
+ 000006AB  C6 05 00001C00 R		mov endKeyPos, 1
 	   01
 					ret
 
- 000006A2			no_key_pressed:
+ 000006B7			no_key_pressed:
 					ret
- 000006A7			readInputEndscr ENDP
+ 000006BC			readInputEndscr ENDP
 
- 000006A7			generateCoins PROC uses eax ebx ecx edx
- 000006AB  80 3D 00001C4D R		cmp coinGenerated, 1
+ 000006BC			generateCoins PROC uses eax ebx ecx edx
+ 000006C0  80 3D 00001C4D R		cmp coinGenerated, 1
 	   01
- 000006B2  74 7C			je output
- 000006B4  E8 00000247			call generateRandomSeed
- 000006B9  83 3D 00001C45 R		cmp coinSeed, 0
-	   00
- 000006C0  74 14			je Pos1
- 000006C2  83 3D 00001C45 R		cmp coinSeed, 1
-	   01
- 000006C9  74 1F			je Pos2
- 000006CB  83 3D 00001C45 R		cmp coinSeed, 2
+ 000006C7  0F 84 00000199		je output
+ 000006CD  83 3D 00000042 R		cmp currentLevel, 2
 	   02
- 000006D2  74 2A			je Pos3
- 000006D4  EB 3C			jmp Pos4
+ 000006D4  0F 84 00000095		je Level2
+ 000006DA  83 3D 00000042 R		cmp currentLevel, 3
+	   03
+ 000006E1  0F 84 0000010D		je Level3
+ 000006E7			Level1:
+ 000006E7  E8 0000034A			call generateRandomSeed
+ 000006EC  83 3D 00001C45 R		cmp coinSeed, 0
+	   00
+ 000006F3  74 14			je Pos1_1
+ 000006F5  83 3D 00001C45 R		cmp coinSeed, 1
+	   01
+ 000006FC  74 22			je Pos1_2
+ 000006FE  83 3D 00001C45 R		cmp coinSeed, 2
+	   02
+ 00000705  74 30			je Pos1_3
+ 00000707  EB 45			jmp Pos1_4
 
- 000006D6			Pos1:
- 000006D6  66| C7 05			mov coinCoord.x, 15
+ 00000709			Pos1_1:
+ 00000709  66| C7 05			mov coinCoord.x, 15
 	   00001C49 R
 	   000F
- 000006DF  66| C7 05			mov coinCoord.y, 3
+ 00000712  66| C7 05			mov coinCoord.y, 3
 	   00001C4B R
 	   0003
- 000006E8  EB 46			jmp output
+ 0000071B  E9 00000146			jmp output
 
- 000006EA			Pos2:
- 000006EA  66| C7 05			mov coinCoord.x, 90
+ 00000720			Pos1_2:
+ 00000720  66| C7 05			mov coinCoord.x, 90
 	   00001C49 R
 	   005A
- 000006F3  66| C7 05			mov coinCoord.y, 4
+ 00000729  66| C7 05			mov coinCoord.y, 4
 	   00001C4B R
 	   0004
- 000006FC  EB 32			jmp output
+ 00000732  E9 0000012F			jmp output
 
- 000006FE			Pos3:
- 000006FE  66| C7 05			mov coinCoord.x, 40
+ 00000737			Pos1_3:
+ 00000737  66| C7 05			mov coinCoord.x, 40
 	   00001C49 R
 	   0028
- 00000707  66| C7 05			mov coinCoord.y, 14
+ 00000740  66| C7 05			mov coinCoord.y, 14
 	   00001C4B R
 	   000E
- 00000710  EB 1E			jmp output
+ 00000749  E9 00000118			jmp output
 
- 00000712			Pos4:
- 00000712  66| C7 05			mov coinCoord.x, 98
+ 0000074E			Pos1_4:
+ 0000074E  66| C7 05			mov coinCoord.x, 98
 	   00001C49 R
 	   0062
- 0000071B  66| C7 05			mov coinCoord.y, 15
+ 00000757  66| C7 05			mov coinCoord.y, 15
 	   00001C4B R
 	   000F
- 00000724  C7 05 00001C45 R		mov coinSeed, 0
+ 00000760  C7 05 00001C45 R		mov coinSeed, 0
 	   00000000
- 0000072E  EB 00			jmp output
+ 0000076A  E9 000000F7			jmp output
 
- 00000730			output:
+ 0000076F			Level2:
+ 0000076F  E8 000002C2			call generateRandomSeed
+ 00000774  83 3D 00001C45 R		cmp coinSeed, 0
+	   00
+ 0000077B  74 14			je Pos2_1
+ 0000077D  83 3D 00001C45 R		cmp coinSeed, 1
+	   01
+ 00000784  74 22			je Pos2_2
+ 00000786  83 3D 00001C45 R		cmp coinSeed, 2
+	   02
+ 0000078D  74 30			je Pos2_3
+ 0000078F  EB 45			jmp Pos2_4
+					
+
+ 00000791			Pos2_1:
+ 00000791  66| C7 05			mov coinCoord.x, 29
+	   00001C49 R
+	   001D
+ 0000079A  66| C7 05			mov coinCoord.y, 3
+	   00001C4B R
+	   0003
+ 000007A3  E9 000000BE			jmp output
+
+ 000007A8			Pos2_2:
+ 000007A8  66| C7 05			mov coinCoord.x, 55
+	   00001C49 R
+	   0037
+ 000007B1  66| C7 05			mov coinCoord.y, 15
+	   00001C4B R
+	   000F
+ 000007BA  E9 000000A7			jmp output
+
+ 000007BF			Pos2_3:
+ 000007BF  66| C7 05			mov coinCoord.x, 114
+	   00001C49 R
+	   0072
+ 000007C8  66| C7 05			mov coinCoord.y, 4
+	   00001C4B R
+	   0004
+ 000007D1  E9 00000090			jmp output
+
+ 000007D6			Pos2_4:
+ 000007D6  66| C7 05			mov coinCoord.x, 78
+	   00001C49 R
+	   004E
+ 000007DF  66| C7 05			mov coinCoord.y, 11
+	   00001C4B R
+	   000B
+ 000007E8  C7 05 00001C45 R		mov coinSeed, 0
+	   00000000
+ 000007F2  EB 72			jmp output
+
+ 000007F4			Level3:
+ 000007F4  E8 0000023D			call generateRandomSeed
+ 000007F9  83 3D 00001C45 R		cmp coinSeed, 0
+	   00
+ 00000800  74 14			je Pos3_1
+ 00000802  83 3D 00001C45 R		cmp coinSeed, 1
+	   01
+ 00000809  74 1F			je Pos3_2
+ 0000080B  83 3D 00001C45 R		cmp coinSeed, 2
+	   02
+ 00000812  74 2A			je Pos3_3
+ 00000814  EB 3C			jmp Pos3_4
+
+ 00000816			Pos3_1:
+ 00000816  66| C7 05			mov coinCoord.x, 71
+	   00001C49 R
+	   0047
+ 0000081F  66| C7 05			mov coinCoord.y, 1
+	   00001C4B R
+	   0001
+ 00000828  EB 3C			jmp output
+
+ 0000082A			Pos3_2:
+ 0000082A  66| C7 05			mov coinCoord.x, 8
+	   00001C49 R
+	   0008
+ 00000833  66| C7 05			mov coinCoord.y, 9
+	   00001C4B R
+	   0009
+ 0000083C  EB 28			jmp output
+
+ 0000083E			Pos3_3:
+ 0000083E  66| C7 05			mov coinCoord.x, 103
+	   00001C49 R
+	   0067
+ 00000847  66| C7 05			mov coinCoord.y, 8
+	   00001C4B R
+	   0008
+ 00000850  EB 14			jmp output
+
+ 00000852			Pos3_4:
+ 00000852  66| C7 05			mov coinCoord.x, 52
+	   00001C49 R
+	   0034
+ 0000085B  66| C7 05			mov coinCoord.y, 14
+	   00001C4B R
+	   000E
+ 00000864  EB 00			jmp output
+
+ 00000866			output:
 					INVOKE WriteConsoleOutputCharacter,
 					outputHandle,
 					OFFSET coinSymbol,
@@ -720,163 +834,163 @@ main.asm						     Page 1 - 1
 					coinCoord,
 					OFFSET count
 
- 0000076A  C6 05 00001C4D R		mov coinGenerated, 1
+ 000008A0  C6 05 00001C4D R		mov coinGenerated, 1
 	   01
 					ret
- 00000776			generateCoins ENDP
+ 000008AC			generateCoins ENDP
 
- 00000776			displayCoinGot PROC uses eax ebx ecx edx
+ 000008AC			displayCoinGot PROC uses eax ebx ecx edx
 				    invoke SetConsoleCursorPosition,outputHandle, coinGotCoord1
- 0000078B  A1 00001C51 R		mov eax, coinGot
- 00000790  E8 00000000 E		call WriteDec
+ 000008C1  A1 00001C51 R		mov eax, coinGot
+ 000008C6  E8 00000000 E		call WriteDec
 					ret
- 0000079A			displayCoinGot ENDP
+ 000008D0			displayCoinGot ENDP
 
- 0000079A			cheatInput PROC
+ 000008D0			cheatInput PROC
 					INVOKE GetAsyncKeyState, 'C'
- 000007A1  A9 00008000			test eax, 8000h
- 000007A6  74 3D			jz endInput
+ 000008D7  A9 00008000			test eax, 8000h
+ 000008DC  74 3D			jz endInput
 					.IF currentLevel == 1
- 000007B1  C7 05 00001C51 R			mov coinGot, 5
+ 000008E7  C7 05 00001C51 R			mov coinGot, 5
 	   00000005
 					.ELSEIF currentLevel == 2
- 000007C6  C7 05 00001C51 R			mov coinGot, 8
+ 000008FC  C7 05 00001C51 R			mov coinGot, 8
 	   00000008
 					.ELSEIF currentLevel == 3
- 000007DB  C7 05 00001C51 R			mov coinGot, 12
+ 00000911  C7 05 00001C51 R			mov coinGot, 12
 	   0000000C
 					.ENDIF
- 000007E5			endInput:
- 000007E5  C3				ret
- 000007E6			cheatInput ENDP
+ 0000091B			endInput:
+ 0000091B  C3				ret
+ 0000091C			cheatInput ENDP
 
- 000007E6			displayEndData PROC uses eax ebx ecx edx
- 000007EA			coin:
- 000007EA  B2 2B			mov dl, 43
- 000007EC  B6 07			mov dh, 7
- 000007EE  E8 00000000 E		call gotoxy
- 000007F3  A1 00001C51 R		mov eax, CoinGot
- 000007F8  E8 00000000 E		call WriteDec
+ 0000091C			displayEndData PROC uses eax ebx ecx edx
+ 00000920			coin:
+ 00000920  B2 2B			mov dl, 43
+ 00000922  B6 07			mov dh, 7
+ 00000924  E8 00000000 E		call gotoxy
+ 00000929  A1 00001C51 R		mov eax, CoinGot
+ 0000092E  E8 00000000 E		call WriteDec
 
- 000007FD			time:
- 000007FD  B2 2B			mov dl, 43
- 000007FF  B6 04			mov dh, 4
- 00000801  E8 00000000 E		call gotoxy
- 00000806  A1 00001C06 R		mov eax, endTime
- 0000080B  E8 00000000 E		call WriteDec
+ 00000933			time:
+ 00000933  B2 2B			mov dl, 43
+ 00000935  B6 04			mov dh, 4
+ 00000937  E8 00000000 E		call gotoxy
+ 0000093C  A1 00001C06 R		mov eax, endTime
+ 00000941  E8 00000000 E		call WriteDec
 
- 00000810			point:
- 00000810  B2 2B			mov dl, 43
- 00000812  B6 0A			mov dh, 10
- 00000814  E8 00000000 E		call gotoxy
+ 00000946			point:
+ 00000946  B2 2B			mov dl, 43
+ 00000948  B6 0A			mov dh, 10
+ 0000094A  E8 00000000 E		call gotoxy
 					.IF isDead == 1
 						.IF currentLevel == 1
- 0000082B  B8 00000000					mov eax, 0
+ 00000961  B8 00000000					mov eax, 0
 						.ELSEIF currentLevel == 2
- 0000083B  B8 00000005					mov eax, 5
+ 00000971  B8 00000005					mov eax, 5
 						.ELSEIF currentLevel == 3
- 0000084B  B8 00000008					mov eax, 8
+ 00000981  B8 00000008					mov eax, 8
 						.ENDIF
 					.ELSE
- 00000852  A1 00001C51 R			mov eax, coinGot
+ 00000988  A1 00001C51 R			mov eax, coinGot
 					.ENDIF
- 00000857  F7 25 00001C06 R		mul endTime
- 0000085D  E8 00000000 E		call WriteDec
+ 0000098D  F7 25 00001C06 R		mul endTime
+ 00000993  E8 00000000 E		call WriteDec
 
- 00000862			level:
- 00000862  B2 2B			mov dl, 43
- 00000864  B6 0D			mov dh, 13
- 00000866  E8 00000000 E		call gotoxy
- 0000086B  A1 00000042 R		mov eax, currentLevel
+ 00000998			level:
+ 00000998  B2 2B			mov dl, 43
+ 0000099A  B6 0D			mov dh, 13
+ 0000099C  E8 00000000 E		call gotoxy
+ 000009A1  A1 00000042 R		mov eax, currentLevel
 					.IF isDead == 1
- 00000879  48					dec eax
+ 000009AF  48					dec eax
 					.ENDIF
- 0000087A  E8 00000000 E		call WriteDec
+ 000009B0  E8 00000000 E		call WriteDec
 					
- 0000087F  B2 00			mov dl, 0
- 00000881  B6 00			mov dh, 0
- 00000883  E8 00000000 E		call gotoxy
+ 000009B5  B2 00			mov dl, 0
+ 000009B7  B6 00			mov dh, 0
+ 000009B9  E8 00000000 E		call gotoxy
 					ret
- 0000088D			displayEndData ENDP
+ 000009C3			displayEndData ENDP
 
- 0000088D			getCoin PROC uses eax ebx ecx edx
- 00000891			compareX:
- 00000891  66| A1			mov ax, playerXY.x
+ 000009C3			getCoin PROC uses eax ebx ecx edx
+ 000009C7			compareX:
+ 000009C7  66| A1			mov ax, playerXY.x
 	   0000001F R
- 00000897  66| 3B 05			cmp ax, coinCoord.x
+ 000009CD  66| 3B 05			cmp ax, coinCoord.x
 	   00001C49 R
- 0000089E  75 25			jne not_equal
+ 000009D4  75 25			jne not_equal
 
- 000008A0			compareY:
- 000008A0  66| A1			mov ax, playerXY.y
+ 000009D6			compareY:
+ 000009D6  66| A1			mov ax, playerXY.y
 	   00000021 R
- 000008A6  66| 3B 05			cmp ax, coinCoord.y
+ 000009DC  66| 3B 05			cmp ax, coinCoord.y
 	   00001C4B R
- 000008AD  75 16			jne not_equal
+ 000009E3  75 16			jne not_equal
 
- 000008AF			equal:
- 000008AF  C6 05 00001C59 R		mov coinGet, 1
+ 000009E5			equal:
+ 000009E5  C6 05 00001C59 R		mov coinGet, 1
 	   01
- 000008B6  FF 05 00001C51 R		inc coinGot
- 000008BC  C6 05 00001C4D R		mov coinGenerated, 0
+ 000009EC  FF 05 00001C51 R		inc coinGot
+ 000009F2  C6 05 00001C4D R		mov coinGenerated, 0
 	   00
- 000008C3  EB 07			jmp end_program
+ 000009F9  EB 07			jmp end_program
 
- 000008C5			not_equal:
- 000008C5  C6 05 00001C59 R		mov coinGet, 0
+ 000009FB			not_equal:
+ 000009FB  C6 05 00001C59 R		mov coinGet, 0
 	   00
 
- 000008CC			end_program:
+ 00000A02			end_program:
 					ret
 
- 000008D1			getCoin ENDP
+ 00000A07			getCoin ENDP
 
- 000008D1			endGame PROC uses eax ebx ecx edx
- 000008D5  A1 00001C51 R		mov eax, coinGot
- 000008DA  83 F8 0C			cmp eax, 12
- 000008DD  74 15			je equal
+ 00000A07			endGame PROC uses eax ebx ecx edx
+ 00000A0B  A1 00001C51 R		mov eax, coinGot
+ 00000A10  83 F8 0C			cmp eax, 12
+ 00000A13  74 15			je equal
 
- 000008DF  A1 00001C06 R		mov eax, endTime
- 000008E4  83 F8 00			cmp eax, 0
- 000008E7  74 0B			je equal
+ 00000A15  A1 00001C06 R		mov eax, endTime
+ 00000A1A  83 F8 00			cmp eax, 0
+ 00000A1D  74 0B			je equal
 
- 000008E9  A0 00001C0B R		mov al, isDead
- 000008EE  3C 01			cmp al, 1
- 000008F0  74 02			je equal
- 000008F2  EB 07			jmp end_program
+ 00000A1F  A0 00001C0B R		mov al, isDead
+ 00000A24  3C 01			cmp al, 1
+ 00000A26  74 02			je equal
+ 00000A28  EB 07			jmp end_program
 
- 000008F4			equal:
- 000008F4  C6 05 00000029 R		mov escConfirm, 1
+ 00000A2A			equal:
+ 00000A2A  C6 05 00000029 R		mov escConfirm, 1
 	   01
 
- 000008FB			end_program:
+ 00000A31			end_program:
 					ret
- 00000900			endGame ENDP
+ 00000A36			endGame ENDP
 
- 00000900			generateRandomSeed PROC uses eax ebx ecx edx
- 00000904			generate:
+ 00000A36			generateRandomSeed PROC uses eax ebx ecx edx
+ 00000A3A			generate:
 					invoke GetTickCount
- 00000909  A3 00001C5A R	    mov seed, eax
+ 00000A3F  A3 00001C5A R	    mov seed, eax
 
- 0000090E  A1 00001C5A R		mov eax, seed
- 00000913  69 C0 000343FD	    imul eax, 214013    
- 00000919  05 00269EC3		    add eax, 2531011
- 0000091E  C1 E8 10		    shr eax, 16    
- 00000921  25 00007FFF		    and eax, 7FFFh
- 00000926  33 D2		    xor edx, edx
- 00000928  BB 00000005			mov ebx, 5
- 0000092D  F7 F3		    div ebx    
- 0000092F  89 15 00001C45 R	    mov coinSeed, edx
+ 00000A44  A1 00001C5A R		mov eax, seed
+ 00000A49  69 C0 000343FD	    imul eax, 214013    
+ 00000A4F  05 00269EC3		    add eax, 2531011
+ 00000A54  C1 E8 10		    shr eax, 16    
+ 00000A57  25 00007FFF		    and eax, 7FFFh
+ 00000A5C  33 D2		    xor edx, edx
+ 00000A5E  BB 00000005			mov ebx, 5
+ 00000A63  F7 F3		    div ebx    
+ 00000A65  89 15 00001C45 R	    mov coinSeed, edx
 
- 00000935  3B 15 00001C5E R		cmp edx, preSeed
- 0000093B  74 C7			je generate
- 0000093D  89 15 00001C5E R		mov preSeed,edx
+ 00000A6B  3B 15 00001C5E R		cmp edx, preSeed
+ 00000A71  74 C7			je generate
+ 00000A73  89 15 00001C5E R		mov preSeed,edx
 					
 					ret
- 00000948			generateRandomSeed ENDP
+ 00000A7E			generateRandomSeed ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/21/24 20:33:29
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/22/24 11:29:58
 main.asm						     Symbols 2 - 1
 
 
@@ -971,7 +1085,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00001C62 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000948 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000A7E Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -1034,7 +1148,6 @@ ReadChar . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ReadConsoleA . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadConsoleOutputCharacterA  . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-ReadConsoleOutputCharacter . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadDec  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadFloat  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -1082,79 +1195,90 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-cheatInput . . . . . . . . . . .	P Near	 0000079A _TEXT	Length= 0000004C Public STDCALL
-  endInput . . . . . . . . . . .	L Near	 000007E5 _TEXT	
-checkPlatformLevel . . . . . . .	P Near	 000001C9 _TEXT	Length= 0000006E Public STDCALL
-  detectPlatform . . . . . . . .	L Near	 000001ED _TEXT	
-  EndCheck . . . . . . . . . . .	L Near	 00000232 _TEXT	
-displayCoinGot . . . . . . . . .	P Near	 00000776 _TEXT	Length= 00000024 Public STDCALL
-displayEndData . . . . . . . . .	P Near	 000007E6 _TEXT	Length= 000000A7 Public STDCALL
-  coin . . . . . . . . . . . . .	L Near	 000007EA _TEXT	
-  time . . . . . . . . . . . . .	L Near	 000007FD _TEXT	
-  point  . . . . . . . . . . . .	L Near	 00000810 _TEXT	
-  level  . . . . . . . . . . . .	L Near	 00000862 _TEXT	
-displayEndscr  . . . . . . . . .	P Near	 0000059A _TEXT	Length= 000000A1 Public STDCALL
-  Pos1 . . . . . . . . . . . . .	L Near	 000005B1 _TEXT	
-  Pos2 . . . . . . . . . . . . .	L Near	 000005ED _TEXT	
-  conti  . . . . . . . . . . . .	L Near	 00000627 _TEXT	
-  EndDisplay . . . . . . . . . .	L Near	 00000636 _TEXT	
-displayInitialscr  . . . . . . .	P Near	 0000048D _TEXT	Length= 000000A1 Public STDCALL
-  Pos1 . . . . . . . . . . . . .	L Near	 000004A4 _TEXT	
-  Pos2 . . . . . . . . . . . . .	L Near	 000004E0 _TEXT	
-  conti  . . . . . . . . . . . .	L Near	 0000051A _TEXT	
-  EndDisplay . . . . . . . . . .	L Near	 00000529 _TEXT	
-displayTime  . . . . . . . . . .	P Near	 0000044E _TEXT	Length= 0000003F Public STDCALL
-drawPlayer . . . . . . . . . . .	P Near	 00000303 _TEXT	Length= 0000003B Public STDCALL
-drawScreen . . . . . . . . . . .	P Near	 0000033E _TEXT	Length= 00000092 Public STDCALL
+cheatInput . . . . . . . . . . .	P Near	 000008D0 _TEXT	Length= 0000004C Public STDCALL
+  endInput . . . . . . . . . . .	L Near	 0000091B _TEXT	
+checkPlatformLevel . . . . . . .	P Near	 000001D0 _TEXT	Length= 0000006E Public STDCALL
+  detectPlatform . . . . . . . .	L Near	 000001F4 _TEXT	
+  EndCheck . . . . . . . . . . .	L Near	 00000239 _TEXT	
+displayCoinGot . . . . . . . . .	P Near	 000008AC _TEXT	Length= 00000024 Public STDCALL
+displayEndData . . . . . . . . .	P Near	 0000091C _TEXT	Length= 000000A7 Public STDCALL
+  coin . . . . . . . . . . . . .	L Near	 00000920 _TEXT	
+  time . . . . . . . . . . . . .	L Near	 00000933 _TEXT	
+  point  . . . . . . . . . . . .	L Near	 00000946 _TEXT	
+  level  . . . . . . . . . . . .	L Near	 00000998 _TEXT	
+displayEndscr  . . . . . . . . .	P Near	 000005AF _TEXT	Length= 000000A1 Public STDCALL
+  Pos1 . . . . . . . . . . . . .	L Near	 000005C6 _TEXT	
+  Pos2 . . . . . . . . . . . . .	L Near	 00000602 _TEXT	
+  conti  . . . . . . . . . . . .	L Near	 0000063C _TEXT	
+  EndDisplay . . . . . . . . . .	L Near	 0000064B _TEXT	
+displayInitialscr  . . . . . . .	P Near	 000004A2 _TEXT	Length= 000000A1 Public STDCALL
+  Pos1 . . . . . . . . . . . . .	L Near	 000004B9 _TEXT	
+  Pos2 . . . . . . . . . . . . .	L Near	 000004F5 _TEXT	
+  conti  . . . . . . . . . . . .	L Near	 0000052F _TEXT	
+  EndDisplay . . . . . . . . . .	L Near	 0000053E _TEXT	
+displayTime  . . . . . . . . . .	P Near	 00000463 _TEXT	Length= 0000003F Public STDCALL
+drawPlayer . . . . . . . . . . .	P Near	 0000030A _TEXT	Length= 0000003B Public STDCALL
+drawScreen . . . . . . . . . . .	P Near	 00000345 _TEXT	Length= 00000092 Public STDCALL
   screenFileName . . . . . . . .	DWord	 bp + 00000008
-  ReadLoop . . . . . . . . . . .	L Near	 00000364 _TEXT	
-  EndDraw  . . . . . . . . . . .	L Near	 000003BD _TEXT	
-endGame  . . . . . . . . . . . .	P Near	 000008D1 _TEXT	Length= 0000002F Public STDCALL
-  equal  . . . . . . . . . . . .	L Near	 000008F4 _TEXT	
-  end_program  . . . . . . . . .	L Near	 000008FB _TEXT	
-generateCoins  . . . . . . . . .	P Near	 000006A7 _TEXT	Length= 000000CF Public STDCALL
-  Pos1 . . . . . . . . . . . . .	L Near	 000006D6 _TEXT	
-  Pos2 . . . . . . . . . . . . .	L Near	 000006EA _TEXT	
-  Pos3 . . . . . . . . . . . . .	L Near	 000006FE _TEXT	
-  Pos4 . . . . . . . . . . . . .	L Near	 00000712 _TEXT	
-  output . . . . . . . . . . . .	L Near	 00000730 _TEXT	
-generateRandomSeed . . . . . . .	P Near	 00000900 _TEXT	Length= 00000048 Public STDCALL
-  generate . . . . . . . . . . .	L Near	 00000904 _TEXT	
-getCoin  . . . . . . . . . . . .	P Near	 0000088D _TEXT	Length= 00000044 Public STDCALL
-  compareX . . . . . . . . . . .	L Near	 00000891 _TEXT	
-  compareY . . . . . . . . . . .	L Near	 000008A0 _TEXT	
-  equal  . . . . . . . . . . . .	L Near	 000008AF _TEXT	
-  not_equal  . . . . . . . . . .	L Near	 000008C5 _TEXT	
-  end_program  . . . . . . . . .	L Near	 000008CC _TEXT	
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000154 Public STDCALL
+  ReadLoop . . . . . . . . . . .	L Near	 0000036B _TEXT	
+  EndDraw  . . . . . . . . . . .	L Near	 000003C4 _TEXT	
+endGame  . . . . . . . . . . . .	P Near	 00000A07 _TEXT	Length= 0000002F Public STDCALL
+  equal  . . . . . . . . . . . .	L Near	 00000A2A _TEXT	
+  end_program  . . . . . . . . .	L Near	 00000A31 _TEXT	
+generateCoins  . . . . . . . . .	P Near	 000006BC _TEXT	Length= 000001F0 Public STDCALL
+  Level1 . . . . . . . . . . . .	L Near	 000006E7 _TEXT	
+  Pos1_1 . . . . . . . . . . . .	L Near	 00000709 _TEXT	
+  Pos1_2 . . . . . . . . . . . .	L Near	 00000720 _TEXT	
+  Pos1_3 . . . . . . . . . . . .	L Near	 00000737 _TEXT	
+  Pos1_4 . . . . . . . . . . . .	L Near	 0000074E _TEXT	
+  Level2 . . . . . . . . . . . .	L Near	 0000076F _TEXT	
+  Pos2_1 . . . . . . . . . . . .	L Near	 00000791 _TEXT	
+  Pos2_2 . . . . . . . . . . . .	L Near	 000007A8 _TEXT	
+  Pos2_3 . . . . . . . . . . . .	L Near	 000007BF _TEXT	
+  Pos2_4 . . . . . . . . . . . .	L Near	 000007D6 _TEXT	
+  Level3 . . . . . . . . . . . .	L Near	 000007F4 _TEXT	
+  Pos3_1 . . . . . . . . . . . .	L Near	 00000816 _TEXT	
+  Pos3_2 . . . . . . . . . . . .	L Near	 0000082A _TEXT	
+  Pos3_3 . . . . . . . . . . . .	L Near	 0000083E _TEXT	
+  Pos3_4 . . . . . . . . . . . .	L Near	 00000852 _TEXT	
+  output . . . . . . . . . . . .	L Near	 00000866 _TEXT	
+generateRandomSeed . . . . . . .	P Near	 00000A36 _TEXT	Length= 00000048 Public STDCALL
+  generate . . . . . . . . . . .	L Near	 00000A3A _TEXT	
+getCoin  . . . . . . . . . . . .	P Near	 000009C3 _TEXT	Length= 00000044 Public STDCALL
+  compareX . . . . . . . . . . .	L Near	 000009C7 _TEXT	
+  compareY . . . . . . . . . . .	L Near	 000009D6 _TEXT	
+  equal  . . . . . . . . . . . .	L Near	 000009E5 _TEXT	
+  not_equal  . . . . . . . . . .	L Near	 000009FB _TEXT	
+  end_program  . . . . . . . . .	L Near	 00000A02 _TEXT	
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000015B Public STDCALL
   initialLoop  . . . . . . . . .	L Near	 00000016 _TEXT	
   conti  . . . . . . . . . . . .	L Near	 00000030 _TEXT	
-  GameLoop . . . . . . . . . . .	L Near	 00000085 _TEXT	
-  endLoop  . . . . . . . . . . .	L Near	 000000E5 _TEXT	
-  Refresh  . . . . . . . . . . .	L Near	 000000F0 _TEXT	
-  CheckInput . . . . . . . . . .	L Near	 00000108 _TEXT	
-  SkipRefresh  . . . . . . . . .	L Near	 0000013C _TEXT	
+  GameLoop . . . . . . . . . . .	L Near	 0000008C _TEXT	
+  endLoop  . . . . . . . . . . .	L Near	 000000EC _TEXT	
+  Refresh  . . . . . . . . . . .	L Near	 000000F7 _TEXT	
+  CheckInput . . . . . . . . . .	L Near	 0000010F _TEXT	
+  SkipRefresh  . . . . . . . . .	L Near	 00000143 _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
-readInputEndscr  . . . . . . . .	P Near	 0000063B _TEXT	Length= 0000006C Public STDCALL
-  confirm  . . . . . . . . . . .	L Near	 00000662 _TEXT	
-  checkA . . . . . . . . . . . .	L Near	 0000066E _TEXT	
-  checkD . . . . . . . . . . . .	L Near	 00000688 _TEXT	
-  no_key_pressed . . . . . . . .	L Near	 000006A2 _TEXT	
-readInputInitialscr  . . . . . .	P Near	 0000052E _TEXT	Length= 0000006C Public STDCALL
-  confirm  . . . . . . . . . . .	L Near	 00000555 _TEXT	
-  checkW . . . . . . . . . . . .	L Near	 00000561 _TEXT	
-  checkS . . . . . . . . . . . .	L Near	 0000057B _TEXT	
-  no_key_pressed . . . . . . . .	L Near	 00000595 _TEXT	
-readPlayerMoveInput  . . . . . .	P Near	 00000237 _TEXT	Length= 000000CC Public STDCALL
-  CheckShift . . . . . . . . . .	L Near	 0000025F _TEXT	
-  CheckA . . . . . . . . . . . .	L Near	 0000027A _TEXT	
-  CheckD . . . . . . . . . . . .	L Near	 000002B4 _TEXT	
-  CheckESC . . . . . . . . . . .	L Near	 000002EE _TEXT	
-  EndInput . . . . . . . . . . .	L Near	 00000302 _TEXT	
+readInputEndscr  . . . . . . . .	P Near	 00000650 _TEXT	Length= 0000006C Public STDCALL
+  confirm  . . . . . . . . . . .	L Near	 00000677 _TEXT	
+  checkA . . . . . . . . . . . .	L Near	 00000683 _TEXT	
+  checkD . . . . . . . . . . . .	L Near	 0000069D _TEXT	
+  no_key_pressed . . . . . . . .	L Near	 000006B7 _TEXT	
+readInputInitialscr  . . . . . .	P Near	 00000543 _TEXT	Length= 0000006C Public STDCALL
+  confirm  . . . . . . . . . . .	L Near	 0000056A _TEXT	
+  checkW . . . . . . . . . . . .	L Near	 00000576 _TEXT	
+  checkS . . . . . . . . . . . .	L Near	 00000590 _TEXT	
+  no_key_pressed . . . . . . . .	L Near	 000005AA _TEXT	
+readPlayerMoveInput  . . . . . .	P Near	 0000023E _TEXT	Length= 000000CC Public STDCALL
+  CheckShift . . . . . . . . . .	L Near	 00000266 _TEXT	
+  CheckA . . . . . . . . . . . .	L Near	 00000281 _TEXT	
+  CheckD . . . . . . . . . . . .	L Near	 000002BB _TEXT	
+  CheckESC . . . . . . . . . . .	L Near	 000002F5 _TEXT	
+  EndInput . . . . . . . . . . .	L Near	 00000309 _TEXT	
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
-updateLevel  . . . . . . . . . .	P Near	 000003D0 _TEXT	Length= 0000007E Public STDCALL
-updatePhysics  . . . . . . . . .	P Near	 00000154 _TEXT	Length= 00000075 Public STDCALL
-  EndPhysics . . . . . . . . . .	L Near	 000001C6 _TEXT	
+updateLevel  . . . . . . . . . .	P Near	 000003D7 _TEXT	Length= 0000008C Public STDCALL
+updatePhysics  . . . . . . . . .	P Near	 0000015B _TEXT	Length= 00000075 Public STDCALL
+  EndPhysics . . . . . . . . . .	L Near	 000001CD _TEXT	
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 
 

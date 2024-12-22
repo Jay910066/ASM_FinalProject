@@ -42,7 +42,7 @@ bytesRead DWORD ?
 screenBytesWritten DWORD ?
 
 ;遊戲畫面資料
-gamescrfile BYTE 'gamefield1.txt',0
+gamescrfile BYTE 'gamefield2.txt',0
 
 ;初始畫面資料
 buffer BYTE 7000 DUP(?)
@@ -126,6 +126,7 @@ conti:
 	mov escConfirm, 0
 	mov endConfirm, 0
 	mov coinGot, 0
+	mov coinGenerated, 0
 	
 GameLoop:
 	call Clrscr
@@ -356,12 +357,14 @@ updateLevel PROC
 		mov playerXY.X, 10
 		mov playerXY.Y, 5
 		mov velocityY, 0
+		mov coinGenerated,0
 	.ELSEIF coinGot == 8 && currentLevel == 2
 		mov currentLevel, 3
 		mov gamescrfile[9], '3'
 		mov playerXY.X, 10
 		mov playerXY.Y, 5
 		mov velocityY, 0
+		mov coinGenerated,0
 	.ENDIF
 
 updateLevel ENDP
@@ -534,34 +537,101 @@ readInputEndscr ENDP
 generateCoins PROC uses eax ebx ecx edx
 	cmp coinGenerated, 1
 	je output
+	cmp currentLevel, 2
+	je Level2
+	cmp currentLevel, 3
+	je Level3
+Level1:
 	call generateRandomSeed
 	cmp coinSeed, 0
-	je Pos1
+	je Pos1_1
 	cmp coinSeed, 1
-	je Pos2
+	je Pos1_2
 	cmp coinSeed, 2
-	je Pos3
-	jmp Pos4
+	je Pos1_3
+	jmp Pos1_4
 
-Pos1:
+Pos1_1:
 	mov coinCoord.x, 15
 	mov coinCoord.y, 3
 	jmp output
 
-Pos2:
+Pos1_2:
 	mov coinCoord.x, 90
 	mov coinCoord.y, 4
 	jmp output
 
-Pos3:
+Pos1_3:
 	mov coinCoord.x, 40
 	mov coinCoord.y, 14
 	jmp output
 
-Pos4:
+Pos1_4:
 	mov coinCoord.x, 98
 	mov coinCoord.y, 15
 	mov coinSeed, 0
+	jmp output
+
+Level2:
+	call generateRandomSeed
+	cmp coinSeed, 0
+	je Pos2_1
+	cmp coinSeed, 1
+	je Pos2_2
+	cmp coinSeed, 2
+	je Pos2_3
+	jmp Pos2_4
+	
+
+Pos2_1:
+	mov coinCoord.x, 29
+	mov coinCoord.y, 3
+	jmp output
+
+Pos2_2:
+	mov coinCoord.x, 55
+	mov coinCoord.y, 15
+	jmp output
+
+Pos2_3:
+	mov coinCoord.x, 114
+	mov coinCoord.y, 4
+	jmp output
+
+Pos2_4:
+	mov coinCoord.x, 78
+	mov coinCoord.y, 11
+	mov coinSeed, 0
+	jmp output
+
+Level3:
+	call generateRandomSeed
+	cmp coinSeed, 0
+	je Pos3_1
+	cmp coinSeed, 1
+	je Pos3_2
+	cmp coinSeed, 2
+	je Pos3_3
+	jmp Pos3_4
+
+Pos3_1:
+	mov coinCoord.x, 71
+	mov coinCoord.y, 1
+	jmp output
+
+Pos3_2:
+	mov coinCoord.x, 8
+	mov coinCoord.y, 9
+	jmp output
+
+Pos3_3:
+	mov coinCoord.x, 103
+	mov coinCoord.y, 8
+	jmp output
+
+Pos3_4:
+	mov coinCoord.x, 52
+	mov coinCoord.y, 14
 	jmp output
 
 output:
