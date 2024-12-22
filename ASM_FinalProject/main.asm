@@ -143,7 +143,7 @@ GameLoop:
 	call updateLevel
 	call endGame
 	cmp  escConfirm, 1
-	je endLoop
+	je Refresh
 	invoke Sleep, updateInterval
 	jmp GameLoop
 

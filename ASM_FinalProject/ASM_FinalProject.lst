@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/22/24 11:29:58
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/22/24 11:39:40
 main.asm						     Page 1 - 1
 
 
@@ -198,7 +198,7 @@ main.asm						     Page 1 - 1
  000000CD  E8 00000935			call endGame
  000000D2  80 3D 00000029 R		cmp  escConfirm, 1
 	   01
- 000000D9  74 11			je endLoop
+ 000000D9  74 1C			je Refresh
 					invoke Sleep, updateInterval
  000000EA  EB A0			jmp GameLoop
 
@@ -990,7 +990,7 @@ main.asm						     Page 1 - 1
  00000A7E			generateRandomSeed ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/22/24 11:29:58
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/22/24 11:39:40
 main.asm						     Symbols 2 - 1
 
 
