@@ -35,6 +35,7 @@ timeLimit DWORD 600 ; 600 seconds
 TimerXY COORD <0,0>
 
 currentLevel DWORD 1
+isCheatKeyPressed BYTE 0
 
 ;µe­±Ã¸»s
 fileHandle HANDLE ?
@@ -663,15 +664,21 @@ displayCoinGot ENDP
 cheatInput PROC
 	INVOKE GetAsyncKeyState, 'C'
 	test eax, 8000h
-	jz endInput
-	.IF currentLevel == 1
-		mov coinGot, 5
-	.ELSEIF currentLevel == 2
-		mov coinGot, 8
-	.ELSEIF currentLevel == 3
-		mov coinGot, 12
+	jz notPressed
+	.IF isCheatKeyPressed == 0
+		.IF currentLevel == 1
+			mov coinGot, 5
+		.ELSEIF currentLevel == 2
+			mov coinGot, 8
+		.ELSEIF currentLevel == 3
+			mov coinGot, 12
+		.ENDIF
+		mov isCheatKeyPressed, 1
 	.ENDIF
-endInput:
+	ret
+	
+notPressed:
+	mov isCheatKeyPressed, 0
 	ret
 cheatInput ENDP
 
