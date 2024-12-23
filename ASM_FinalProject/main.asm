@@ -1,39 +1,46 @@
 INCLUDE Irvine32.inc
 INCLUDELIB kernel32.lib
 
+; 定義常數
 playerSize = 1
 gravity = 1
 jumpForce = 4
 
 .data
+; 玩家資料
 player BYTE 'P'
-
-platformBuffer BYTE 10 DUP(?)
-platformCoord COORD <0,0>
-charRead DWORD ?
-
-outputHandle DWORD 0
-bytesWritten DWORD 0
-count DWORD 0
+playerAttributes WORD playerSize DUP(0bh)
 playerXY COORD <10,5>
 velocityY SWORD 0
 isRunning BYTE 0
 
+; 用於讀取畫面上的字符
+platformBuffer BYTE 10 DUP(?)
+platformCoord COORD <0,0>
+charRead DWORD ?
+
+; 用於繪製玩家和金幣的字符
+outputHandle DWORD 0
+bytesWritten DWORD 0
+count DWORD 0
+
+; 用於平台相關的判斷
 platformLevel WORD 24
 onPlatform BYTE 1
 
+; 用於判斷是否進入結算畫面
 escConfirm byte 0
 
-cellsWritten DWORD ?
-playerAttributes WORD playerSize DUP(0bh)
+; 每次更新GameLoop的時間間隔
+updateInterval WORD 50 
 
-updateInterval WORD 50 ; 50ms each update
-
+; 用於計算和顯示時間
 startTime DWORD ?
 elapsedTime DWORD ?
 timeLimit DWORD 600 ; 600 seconds
 TimerXY COORD <0,0>
 
+; 關卡相關資料
 currentLevel DWORD 1
 isCheatKeyPressed BYTE 0
 
@@ -100,13 +107,14 @@ preSeed DWORD 0
 	GetAsyncKeyState PROTO STDCALL :DWORD
 	ReadConsoleOutputCharacterA PROTO STDCALL :DWORD, :PTR BYTE, :DWORD, :COORD, :PTR DWORD
 	drawScreen PROTO screenFileName :PTR BYTE
-main PROC
-	INVOKE SetConsoleOutputCP, 437
 
+; 主程式
+main PROC
 	; Get the console ouput handle
 	INVOKE GetStdHandle, STD_OUTPUT_HANDLE
 	mov outputHandle, eax	; save console handle
 
+; 開始介面
 initialLoop:
 	call Clrscr
 	call displayInitialscr
@@ -115,6 +123,7 @@ initialLoop:
 	je conti
 	jmp initialLoop
 
+; 初始化遊戲
 conti:
 	INVOKE GetTickCount
 	mov startTime, eax
@@ -129,6 +138,7 @@ conti:
 	mov coinGot, 0
 	mov coinGenerated, 0
 	
+; 遊戲迴圈
 GameLoop:
 	call Clrscr
 	call updatePhysics
@@ -148,11 +158,13 @@ GameLoop:
 	invoke Sleep, updateInterval
 	jmp GameLoop
 
+; 結算畫面
 endLoop:
 	cmp needsRefresh, 1
 	je Refresh
 	jmp CheckInput
 
+; 更新畫面
 Refresh:
 	call Clrscr
 	call displayEndscr
@@ -179,6 +191,7 @@ SkipRefresh:
 	exit
 main ENDP
 
+; 更新重力和玩家位置
 updatePhysics PROC uses eax ebx
 	; 檢查是否超出螢幕上方
 	.IF playerXY.Y >= 60000
@@ -222,9 +235,12 @@ checkPlatformLevel PROC uses eax ebx ecx edx
 	mov platformCoord.Y, bx
 
 	mov cx, 30
+
+; 從玩家位置向下尋找平台
 detectPlatform:
 	mov dx, cx
 
+	; 讀取螢幕上的字符
 	INVOKE ReadConsoleOutputCharacterA,
 	outputHandle,
 	ADDR platformBuffer,
@@ -232,8 +248,9 @@ detectPlatform:
 	platformCoord,
 	ADDR charRead
 
+	; 檢查是否為平台(空白之外的字符)
 	mov al, platformBuffer
-	.IF al != 32
+	.IF al != 32 ; 如果不是空白
 		mov ax, platformCoord.Y
 		dec ax
 		mov platformLevel, ax
@@ -243,17 +260,11 @@ detectPlatform:
 	mov cx, dx
 	loop detectPlatform
 
-	; 輸出Debug訊息
-;showINFO:
-	;mov dl, 0
-	;mov dh, 0
-	;call gotoxy
-	;call WriteDec
-
 EndCheck:
 	ret
 checkPlatformLevel ENDP
 
+; 讀取玩家移動輸入
 readPlayerMoveInput PROC
     ; 檢查W鍵（向上移動）
     INVOKE GetAsyncKeyState, 'W'
@@ -281,7 +292,8 @@ CheckA:
 	.ELSE
 		dec playerXY.X
 	.ENDIF
-							
+	
+	; 檢查是否超出邊界左側
 	.IF playerXY.X <= 0
 		mov playerXY.X, 1
 	.ENDIF
@@ -296,6 +308,8 @@ CheckD:
 	.ELSE
 		inc playerXY.X
 	.ENDIF
+
+	; 檢查是否超出邊界右側
 	.IF playerXY.X >= 119
 		mov playerXY.X, 118
 	.ENDIF
@@ -311,6 +325,7 @@ EndInput:
 	ret
 readPlayerMoveInput ENDP
 
+; 繪製玩家
 drawPlayer PROC
 	INVOKE WriteConsoleOutputAttribute,
 	outputHandle, 
@@ -328,6 +343,7 @@ drawPlayer PROC
 	ret
 drawPlayer ENDP
 
+; 繪製畫面
 drawScreen PROC uses eax ebx ecx edx, screenFileName:PTR BYTE
     ;打開文字檔案
 	INVOKE CreateFile, screenFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL 
@@ -351,6 +367,7 @@ EndDraw:
     ret
 drawScreen ENDP
 
+; 更新關卡
 updateLevel PROC
 	.IF coinGot == 5 && currentLevel == 1
 		mov currentLevel, 2
@@ -370,6 +387,7 @@ updateLevel PROC
 
 updateLevel ENDP
 
+; 顯示剩餘時間
 displayTime PROC uses eax ebx ecx edx
 	INVOKE GetTickCount
 	sub eax, startTime
@@ -387,6 +405,7 @@ displayTime PROC uses eax ebx ecx edx
 	ret
 displayTime ENDP
 
+; 顯示初始畫面
 displayInitialscr PROC uses eax ebx ecx edx
     INVOKE drawScreen, ADDR initialscrfile
 	cmp initialKeyPos, 1
@@ -430,6 +449,7 @@ EndDisplay:
     ret
 displayInitialscr ENDP
 
+; 讀取初始畫面輸入
 readInputInitialscr PROC uses eax ebx ecx edx
 	INVOKE GetAsyncKeyState, VK_RETURN
 	test eax, 8000h                     
@@ -461,6 +481,7 @@ no_key_pressed:
 	ret
 readInputInitialscr ENDP
 
+; 顯示結算畫面
 displayEndscr PROC uses eax ebx ecx edx
     INVOKE drawScreen, ADDR endscrfile
 	cmp endKeyPos, 1
@@ -504,6 +525,7 @@ EndDisplay:
     ret
 displayEndscr ENDP
 
+; 讀取結算畫面輸入
 readInputEndscr PROC uses eax ebx ecx edx
 	INVOKE GetAsyncKeyState, VK_RETURN
 	test eax, 8000h                     
@@ -535,6 +557,7 @@ no_key_pressed:
 	ret
 readInputEndscr ENDP
 
+; 生成金幣
 generateCoins PROC uses eax ebx ecx edx
 	cmp coinGenerated, 1
 	je output
@@ -654,6 +677,7 @@ output:
 	ret
 generateCoins ENDP
 
+; 顯示金幣數量
 displayCoinGot PROC uses eax ebx ecx edx
     invoke SetConsoleCursorPosition,outputHandle, coinGotCoord1
 	mov eax, coinGot
@@ -661,6 +685,7 @@ displayCoinGot PROC uses eax ebx ecx edx
 	ret
 displayCoinGot ENDP
 
+; 快速通關鈕
 cheatInput PROC
 	INVOKE GetAsyncKeyState, 'C'
 	test eax, 8000h
@@ -682,6 +707,7 @@ notPressed:
 	ret
 cheatInput ENDP
 
+; 顯示結算資訊
 displayEndData PROC uses eax ebx ecx edx
 coin:
 	mov dl, 43
@@ -731,6 +757,7 @@ level:
 	ret
 displayEndData ENDP
 
+; 判斷是否取得金幣
 getCoin PROC uses eax ebx ecx edx
 compareX:
 	mov ax, playerXY.x
@@ -756,6 +783,7 @@ end_program:
 
 getCoin ENDP
 
+; 判斷遊戲是否結束
 endGame PROC uses eax ebx ecx edx
 	mov eax, coinGot
 	cmp eax, 12
@@ -777,6 +805,7 @@ end_program:
 	ret
 endGame ENDP
 
+; 計算用於生成金幣的隨機種子
 generateRandomSeed PROC uses eax ebx ecx edx
 generate:
 	invoke GetTickCount
