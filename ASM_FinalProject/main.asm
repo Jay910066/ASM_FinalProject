@@ -144,7 +144,7 @@ initialize:
 ; 遊戲迴圈
 GameLoop:
 	call Clrscr
-	call updatePhysics					;重力系統
+	call updateGravity					;重力系統
 	INVOKE drawScreen, ADDR gameScreenFile	
 	call drawPlayer						
 	call checkPlatformLevel				;確認目前平台的Y座標
@@ -153,7 +153,7 @@ GameLoop:
 	call readPlayerMoveInput			
 	call getCoin						;判斷是否取得金幣
 	call generateCoins					
-	call cheatInput						;按C鍵進入下一關
+	call readCheatInput					;按C鍵進入下一關
 	call updateLevel					;確認以及進入下一關
 	call endGame						;判斷是否觸發結束遊戲
 	cmp  escConfirm, 1					
@@ -194,7 +194,7 @@ SkipRefresh:
 main ENDP
 
 ; 更新重力和玩家位置
-updatePhysics PROC uses eax ebx
+updateGravity PROC uses eax ebx
 	; 檢查是否超出螢幕上方
 	.IF playerXY.Y >= 60000
 		mov playerXY.Y, 0
@@ -215,18 +215,18 @@ updatePhysics PROC uses eax ebx
     ; 檢查是否低於地面
     mov ax, playerXY.Y
     cmp ax, platformLevel
-	jle EndPhysics            ; 如果未超過地面，跳過地面處理
+	jle EndGravity            ; 如果未超過地面，跳過地面處理
 
     ; 如果超出地面，重置到地面
     mov ax, platformLevel
     mov playerXY.Y, ax        ; 將玩家重置到地面
     mov velocityY, 0          ; 停止垂直運動
     mov onPlatform, 1           ; 標記玩家在地面上
-    jmp EndPhysics
+    jmp EndGravity
 
-EndPhysics:
+EndGravity:
     ret
-updatePhysics ENDP
+updateGravity ENDP
 
 ; 檢查平台高度
 checkPlatformLevel PROC uses eax ebx ecx edx
@@ -697,7 +697,7 @@ displayCoinGot PROC uses eax ebx ecx edx
 displayCoinGot ENDP
 
 ; 快速通關鈕
-cheatInput PROC
+readCheatInput PROC
 	INVOKE GetAsyncKeyState, 'C'
 	test eax, 8000h
 	jz notPressed
@@ -716,7 +716,7 @@ cheatInput PROC
 notPressed:
 	mov isCheatKeyPressed, 0
 	ret
-cheatInput ENDP
+readCheatInput ENDP
 
 ; 顯示結算資訊
 displayEndData PROC uses eax ebx ecx edx

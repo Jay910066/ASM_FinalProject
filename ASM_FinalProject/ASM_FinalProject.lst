@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/25/24 21:58:33
+Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/26/24 13:13:43
 main.asm						     Page 1 - 1
 
 
@@ -198,7 +198,7 @@ main.asm						     Page 1 - 1
 				; 遊戲迴圈
  00000082			GameLoop:
  00000082  E8 00000000 E		call Clrscr
- 00000087  E8 000000C3			call updatePhysics					;重力系統
+ 00000087  E8 000000C3			call updateGravity					;重力系統
 					INVOKE drawScreen, ADDR gameScreenFile	
  00000096  E8 00000263			call drawPlayer						
  0000009B  E8 00000124			call checkPlatformLevel				;確認目前平台的Y座標
@@ -253,7 +253,7 @@ main.asm						     Page 1 - 1
  0000014F			main ENDP
 
 				; 更新重力和玩家位置
- 0000014F			updatePhysics PROC uses eax ebx
+ 0000014F			updateGravity PROC uses eax ebx
 					; 檢查是否超出螢幕上方
 					.IF playerXY.Y >= 60000
  0000015C  66| C7 05				mov playerXY.Y, 0
@@ -284,7 +284,7 @@ main.asm						     Page 1 - 1
 	   00000005 R
  0000019A  66| 3B 05		    cmp ax, platformLevel
 	   00000028 R
- 000001A1  7E 1E			jle EndPhysics            ; 如果未超過地面，跳過地面處理
+ 000001A1  7E 1E			jle EndGravity            ; 如果未超過地面，跳過地面處理
 
 				    ; 如果超出地面，重置到地面
  000001A3  66| A1		    mov ax, platformLevel
@@ -296,11 +296,11 @@ main.asm						     Page 1 - 1
 	   0000
  000001B8  C6 05 0000002A R	    mov onPlatform, 1           ; 標記玩家在地面上
 	   01
- 000001BF  EB 00		    jmp EndPhysics
+ 000001BF  EB 00		    jmp EndGravity
 
- 000001C1			EndPhysics:
+ 000001C1			EndGravity:
 				    ret
- 000001C4			updatePhysics ENDP
+ 000001C4			updateGravity ENDP
 
 				; 檢查平台高度
  000001C4			checkPlatformLevel PROC uses eax ebx ecx edx
@@ -1041,7 +1041,7 @@ main.asm						     Page 1 - 1
  00000A80			generateRandomSeed ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.42.34435.0	    12/25/24 21:58:33
+Microsoft (R) Macro Assembler Version 14.37.32822.0	    12/26/24 13:13:43
 main.asm						     Symbols 2 - 1
 
 
@@ -1327,9 +1327,9 @@ readPlayerMoveInput  . . . . . .	P Near	 00000232 _TEXT	Length= 000000CC Public 
   CheckESC . . . . . . . . . . .	L Near	 000002E9 _TEXT	
   EndInput . . . . . . . . . . .	L Near	 000002FD _TEXT	
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+updateGravity  . . . . . . . . .	P Near	 0000014F _TEXT	Length= 00000075 Public STDCALL
+  EndGravity . . . . . . . . . .	L Near	 000001C1 _TEXT	
 updateLevel  . . . . . . . . . .	P Near	 000003CB _TEXT	Length= 0000008C Public STDCALL
-updatePhysics  . . . . . . . . .	P Near	 0000014F _TEXT	Length= 00000075 Public STDCALL
-  EndPhysics . . . . . . . . . .	L Near	 000001C1 _TEXT	
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 
 
