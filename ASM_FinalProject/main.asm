@@ -173,7 +173,7 @@ Refresh:
 	call displayEndScreen
 	call displayEndData
 	mov needsRefresh, 0
-
+;確認變動
 CheckInput:
 	call readInputEndScreen
 	cmp againConfirm, 1					;確認重新遊戲
@@ -185,7 +185,7 @@ CheckInput:
 	mov needsRefresh, 1
 	mov ah, endKeyPos
 	mov prevKeyPos, ah
-
+;跳過刷新
 SkipRefresh:
 	invoke Sleep, updateInterval
 	jmp endLoop
@@ -407,12 +407,12 @@ displayTime PROC uses eax ebx ecx edx
 	ret
 displayTime ENDP
 
-; 顯示初始畫面
+;顯示初始畫面
 displayBeginScreen PROC uses eax ebx ecx edx
     INVOKE drawScreen, ADDR beginScreenFile
 	cmp beginKeyPos, 1
 	je Pos2 
-
+;繪製箭頭(指向start鍵)
 Pos1:
 	INVOKE WriteConsoleOutputCharacter,
 	outputHandle, 
@@ -428,7 +428,7 @@ Pos1:
 	beginStartRightPos,
 	OFFSET count
 	jmp conti
-
+;繪製箭頭(指向exit鍵)
 Pos2:
 	INVOKE WriteConsoleOutputCharacter,
 	outputHandle, 
@@ -453,6 +453,8 @@ displayBeginScreen ENDP
 
 ; 讀取初始畫面輸入
 readInputBeginScreen PROC uses eax ebx ecx edx
+;檢查Enter鍵
+checkEnter:
 	INVOKE GetAsyncKeyState, VK_RETURN
 	test eax, 8000h                     
     jz checkW
@@ -460,18 +462,18 @@ readInputBeginScreen PROC uses eax ebx ecx edx
 	je confirm
 	call Clrscr
 	INVOKE ExitProcess, 0
-
+;開始遊戲
 confirm:
 	mov beginConfirm, 1
 	ret
-
+;檢查W鍵(指向start鍵)
 checkW:
 	INVOKE GetAsyncKeyState, 'W'
 	test eax, 8000h                     
     jz checkS
 	mov beginKeyPos, 0
 	ret
-
+;檢查S鍵(指向exit鍵)
 checkS:
 	INVOKE GetAsyncKeyState, 'S'
 	test eax, 8000h                     
@@ -488,7 +490,7 @@ displayEndScreen PROC uses eax ebx ecx edx
     INVOKE drawScreen, ADDR endScreenFile
 	cmp endKeyPos, 1
 	je Pos2 
-
+;繪製箭頭(指向again鍵)
 Pos1:
 	INVOKE WriteConsoleOutputCharacter,
 	outputHandle, 
@@ -504,7 +506,7 @@ Pos1:
 	endStartRightPos,
 	OFFSET count
 	jmp conti
-
+;繪製箭頭(指向exit鍵)
 Pos2:
 	INVOKE WriteConsoleOutputCharacter,
 	outputHandle, 
@@ -529,6 +531,8 @@ displayEndScreen ENDP
 
 ; 讀取結算畫面輸入
 readInputEndScreen PROC uses eax ebx ecx edx
+;檢查Enter鍵
+checkEnter:
 	INVOKE GetAsyncKeyState, VK_RETURN
 	test eax, 8000h                     
     jz checkA
@@ -536,18 +540,18 @@ readInputEndScreen PROC uses eax ebx ecx edx
 	je confirm
 	call Clrscr
 	INVOKE ExitProcess, 0
-
+;重新遊戲
 confirm:
 	mov againConfirm, 1
 	ret
-
+;檢查W鍵(指向again鍵)
 checkA:
 	INVOKE GetAsyncKeyState, 'A'
 	test eax, 8000h                     
     jz checkD
 	mov endKeyPos, 0
 	ret
-
+;檢查S鍵(指向exit鍵)
 checkD:
 	INVOKE GetAsyncKeyState, 'D'
 	test eax, 8000h                     
@@ -561,6 +565,7 @@ readInputEndScreen ENDP
 
 ; 生成金幣
 generateCoins PROC uses eax ebx ecx edx
+;判斷關卡數
 	cmp coinGenerated, 1
 	je output
 	cmp currentLevel, 2
