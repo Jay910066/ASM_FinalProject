@@ -834,7 +834,7 @@ generate:
     shr eax, 16    
     and eax, 7FFFh
     xor edx, edx
-	mov ebx, 5
+	mov ebx, 4
     div ebx    
     mov coinSeed, edx
 
